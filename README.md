@@ -3,6 +3,10 @@
 # 介绍
 基于 `hyperf` + `vue-manage-system` 开发的后台管理系统。
 
+[预览地址](https://admin.fengfengphp.com) 账号: 13888888888 密码: 111111
+
+测试账号只有浏览权限，不会因为登录失败次数过多而禁止登录
+
 [hyperf](https://github.com/hyperf/hyperf) 基于 `swoole` 的php框架。
 
 [vue-manage-system](https://github.com/lin-xin/vue-manage-system) 基于 `vue` + `element-ui` 的后台模板。
