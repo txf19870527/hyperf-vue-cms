@@ -12,14 +12,11 @@ function array_only(array $array, array $keys): array
  */
 function clearHtml(array $data)
 {
-    if (is_array($data)) {
-        foreach ($data as &$v) {
-            $v = str_replace([chr(239),chr(187),chr(191)], '', trim(strip_tags($v)));
-        }
-
-        return $data;
+    foreach ($data as &$v) {
+        $v = str_replace([chr(239),chr(187),chr(191)], '', trim(strip_tags($v)));
     }
 
+    return $data;
 }
 
 function array_forget(array $array, array $keys): array
@@ -55,15 +52,6 @@ function date_time_now()
 function date_now()
 {
     return date("Y-m-d");
-}
-
-function json_decode_with_out_error($data)
-{
-    if (empty($data) || !is_string($data)) {
-        return '';
-    }
-
-    return \json_decode($data, true);
 }
 
 function array_slimming(array $array, array $slimmingKeys, array $forgetKeys = [])

@@ -28,7 +28,7 @@ class CrossOriginMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        if (!in_array($request->getMethod(), ['OPTIONS', 'POST'])) {
+        if (!in_array($request->getMethod(), ['OPTIONS', 'POST', 'GET'])) {
             throw new BusinessException(ResponseCode::METHOD_ERROR);
         }
 

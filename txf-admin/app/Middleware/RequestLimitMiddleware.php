@@ -8,7 +8,7 @@ use App\Com\RedisKeyMap;
 use App\Com\ResponseCode;
 use App\Exception\BusinessException;
 use Hyperf\Redis\RedisFactory;
-use Hyperf\Utils\Codec\Json;
+use App\Com\Json;
 use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;

@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Middleware;
 
+use App\Com\Json;
 use App\Com\Log;
 use App\Com\ResponseCode;
 use App\Exception\BusinessException;
-use Hyperf\HttpMessage\Stream\SwooleStream;
-use Hyperf\Utils\Codec\Json;
-use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Hyperf\Utils\Context;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -55,8 +54,20 @@ class InitMiddleware implements MiddlewareInterface
             $token = $body['token'] ?? '';
             unset($body['token']);
         } else {
+
+            // 开放 GET 请求
+            $get = $request->getQueryParams();
+
             $body = $request->getBody()->getContents();
-            $body = (array)json_decode_with_out_error($body);
+
+            if (empty($body)) {
+                $body = [];
+            } else {
+                $body = (array) Json::decode($body);
+            }
+
+            $body = array_merge($get, $body);
+
             $token = !empty($body['token']) ? (string)$body['token'] : '';
             unset($body['token']);
         }
@@ -93,12 +104,20 @@ class InitMiddleware implements MiddlewareInterface
         $beginTime = $requestData['begin_time'];
         $endTime = microtime(true);
 
+        $logResponse = config("request_log_response");
+
+        if ($logResponse || env("APP_ENV") != 'prod') {
+            $body = $response->getBody()->getContents() ?? "";
+        } else {
+            $body = '';
+        }
+
         Log::info([
             'request_uuid' => $requestId,
             'request_uri' => $requestData['uri'],
             'request_time' => $requestData['request_time'],
             'request_data' => $requestData['request_data'],
-            'response_data' => $response->getBody()->getContents() ?? "",
+            'response_data' => $body,
             'use_time' => number_format(($endTime - $beginTime), 5),
             'append_data' => Log::destroyAppend(),
         ], 'request_log');

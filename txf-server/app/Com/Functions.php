@@ -40,15 +40,6 @@ function date_now()
     return date("Y-m-d");
 }
 
-function json_decode_with_out_error($data)
-{
-    if (empty($data) || !is_string($data)) {
-        return '';
-    }
-
-    return \json_decode($data, true);
-}
-
 function array_slimming(array $array, array $slimmingKeys, array $forgetKeys = [])
 {
     foreach ($array as &$data) {

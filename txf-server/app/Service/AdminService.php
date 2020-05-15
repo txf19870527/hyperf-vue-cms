@@ -17,7 +17,7 @@ use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Redis\RedisFactory;
 use Hyperf\RpcServer\Annotation\RpcService;
-use Hyperf\Utils\Codec\Json;
+use App\Com\Json;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -47,11 +47,10 @@ class AdminService implements AdminServiceInterface
     private $permissionService;
 
     /**
-     * 登录
      * @param string $mobile
      * @param string $password
-     * @return mixed
-     *
+     * @return array
+     * 登录
      */
     public function login(string $mobile, string $password)
     {
@@ -78,7 +77,10 @@ class AdminService implements AdminServiceInterface
             }
 
             if ($userData['login_error_times'] > config("admin.login_error_times")) {
-                throw new BusinessException(ResponseCode::USER_CANNOT_LOGIN);
+                if (!in_array($mobile, config("admin.test_account"))) {
+                    throw new BusinessException(ResponseCode::USER_CANNOT_LOGIN);
+                }
+
             }
 
             $userModel->login_error_times = 0;

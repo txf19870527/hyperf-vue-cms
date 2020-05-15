@@ -12,13 +12,12 @@ declare(strict_types=1);
 
 namespace App\Exception\Handler;
 
+use App\Com\Json;
 use App\Com\Log;
 use App\Com\ResponseCode;
-use App\Exception\BusinessException;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
-use Hyperf\Utils\Codec\Json;
 use Hyperf\Utils\Context;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
@@ -37,11 +36,7 @@ class AppExceptionHandler extends ExceptionHandler
 
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
-        try {
-            $data = Json::encode(ResponseCode::errorFormat($throwable->getCode(), $throwable->getMessage()));
-        } catch (\Throwable $e) {
-            $data = '{"code":-1,"message":""}';
-        }
+        $data = Json::encode(ResponseCode::error($throwable->getCode(), $throwable->getMessage()));
 
         $this->requestLog($throwable);
 
@@ -73,7 +68,7 @@ class AppExceptionHandler extends ExceptionHandler
             'request_uri' => $requestData['uri'],
             'request_time' => $requestData['request_time'],
             'request_data' => $requestData['request_data'],
-            'response_data' => ["code" => $throwable->getCode(), "message" => $throwable->getMessage(), 'file' => $throwable->getFile(), 'line' => $throwable->getLine()],
+            'response_data' => Log::parseException($throwable),
             'use_time' => number_format(($endTime - $beginTime), 5),
             'append_data' => Log::destroyAppend()
         ], 'error_log');

@@ -73,14 +73,20 @@ class InitMiddleware implements MiddlewareInterface
 
         $packer = ApplicationContext::getContainer()->get(\Hyperf\JsonRpc\Packer\JsonLengthPacker::class);
 
-        $body = $packer->unpack($response->getBody()->getContents());
+        $logResponse = config("request_log_response");
+
+        if ($logResponse || env("APP_ENV") != 'prod') {
+            $body = $packer->unpack($response->getBody()->getContents());
+        } else {
+            $body = '';
+        }
 
         Log::info([
             'request_uuid' => $requestId,
             'request_uri' => $requestData['uri'],
             'request_time' => $requestData['request_time'],
             'request_data' => $requestData['request_data'],
-            'response_data' => $body ?? "",
+            'response_data' => $body,
             'use_time' => number_format(($endTime - $beginTime), 5),
             'append_data' => Log::destroyAppend(),
         ], 'request_log');

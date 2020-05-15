@@ -44,8 +44,6 @@ class DbQueryExecutedListener implements ListenerInterface
                     $sql = Str::replaceFirst('?', "'{$value}'", $sql);
                 }
             }
-
-//            Log::append('sql', sprintf('[%s] %s', $event->time, $sql));
         }
     }
 }

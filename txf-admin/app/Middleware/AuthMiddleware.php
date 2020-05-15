@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 
+use App\Com\Json;
 use App\Com\Log;
 use App\Com\RedisKeyMap;
 use App\Com\ResponseCode;
@@ -58,7 +59,7 @@ class AuthMiddleware implements MiddlewareInterface
 
         $redis = $this->container->get(RedisFactory::class)->get("default");
 
-        $userData = json_decode_with_out_error($redis->get(RedisKeyMap::build(RedisKeyMap::TOKEN, [$token])));
+        $userData = Json::decode($redis->get(RedisKeyMap::build(RedisKeyMap::TOKEN, [$token])));
 
         // 登录失败
         if (empty($userData['id'])) {

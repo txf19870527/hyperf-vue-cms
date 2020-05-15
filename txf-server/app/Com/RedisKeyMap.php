@@ -6,21 +6,21 @@ namespace App\Com;
 
 class RedisKeyMap
 {
-    const TOKEN = "token";
+    const TOKEN = "string:token";
 
-    const TOKEN_CACHE = "token_cache";
+    const TOKEN_CACHE = "string:token_cache";
 
-    const RULE_PERMISSION_CACHE = "rule_permission_cache";
+    const RULE_PERMISSION_CACHE = "hash:rule_permission_cache";
 
-    const REQUEST_LIMIT = 'request_limit';
+    const REQUEST_LIMIT = 'string:request_limit';
 
-    const TYPE_INCOME = 'type_income';
+    const TYPE_INCOME = 'string:type_income';
 
-    const TYPE_EXPENSE = "type_expense";
+    const TYPE_EXPENSE = "string:type_expense";
 
-    const API_TOKEN = "api_token";
+    const API_TOKEN = "hash:api_token";
 
-    const API_TOKEN_CACHE = "api_token_cache";
+    const API_TOKEN_CACHE = "string:api_token_cache";
 
     /**
      * @param string $key 使用 self::xxx的形式传入

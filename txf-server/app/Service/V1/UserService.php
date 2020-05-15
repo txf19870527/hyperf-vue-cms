@@ -1,20 +1,20 @@
 <?php
 
 
-namespace App\Service\Va;
+namespace App\Service\V1;
 
 
 use App\Com\RedisKeyMap;
 use App\Model\User;
-use App\Service\Interfaces\Va\UserServiceInterface;
+use App\Service\Interfaces\V1\UserServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Redis\RedisFactory;
 use Hyperf\RpcServer\Annotation\RpcService;
 
 /**
  * Class UserService
- * @package App\Service\Va
- * @RpcService(name="UserServiceVa", protocol="jsonrpc", server="jsonrpc")
+ * @package App\Service\V1
+ * @RpcService(name="UserServiceV1", protocol="jsonrpc", server="jsonrpc")
  */
 class UserService implements UserServiceInterface
 {

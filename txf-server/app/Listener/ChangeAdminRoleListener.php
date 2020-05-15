@@ -8,7 +8,7 @@ use App\Com\RedisKeyMap;
 use App\Event\ChangeAdminRoleEvent;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Redis\RedisFactory;
-use Hyperf\Utils\Codec\Json;
+use App\Com\Json;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 
@@ -48,7 +48,7 @@ class ChangeAdminRoleListener implements ListenerInterface
                     $redisKey = RedisKeyMap::build(RedisKeyMap::TOKEN, [$token]);
                     $tokenData = $redis->get($redisKey);
                     if (!empty($tokenData)) {
-                        $tokenData = json_decode_with_out_error($tokenData);
+                        $tokenData = Json::decode($tokenData);
                         if (!empty($tokenData)) {
                             $tokenData['roles'] = $roles;
                             $redis->set($redisKey, Json::encode($tokenData));

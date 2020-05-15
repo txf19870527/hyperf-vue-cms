@@ -1,25 +1,24 @@
 <?php
 
 
-namespace App\Service\Va;
+namespace App\Service\V1;
 
 
 use App\Com\RedisKeyMap;
 use App\Com\ResponseCode;
 use App\Exception\BusinessException;
 use App\Model\Type;
-use App\Model\User;
 use App\Model\UserType;
-use App\Service\Interfaces\Va\UserTypeServiceInterface;
+use App\Service\Interfaces\V1\UserTypeServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Redis\RedisFactory;
 use Hyperf\RpcServer\Annotation\RpcService;
-use Hyperf\Utils\Codec\Json;
+use App\Com\Json;
 
 /**
  * Class UserTypeService
- * @package App\Service\Va
- * @RpcService(name="UserTypeServiceVa", protocol="jsonrpc", server="jsonrpc")
+ * @package App\Service\V1
+ * @RpcService(name="UserTypeServiceV1", protocol="jsonrpc", server="jsonrpc")
  */
 class UserTypeService implements UserTypeServiceInterface
 {
@@ -42,7 +41,8 @@ class UserTypeService implements UserTypeServiceInterface
         $redisKey = RedisKeyMap::build(RedisKeyMap::TYPE_INCOME, [$userId]);
 
         if ($redis->exists($redisKey)) {
-            return json_decode_with_out_error($redis->get($redisKey));
+
+            return Json::decode($redis->get($redisKey));
         }
 
         $userTypeData = UserType::query()->where("user_id", $userId)->where("type", 2)->orderBy("id", "asc")->get()->toArray();
@@ -69,7 +69,7 @@ class UserTypeService implements UserTypeServiceInterface
         $redisKey = RedisKeyMap::build(RedisKeyMap::TYPE_EXPENSE, [$userId]);
 
         if ($redis->exists($redisKey)) {
-            return json_decode_with_out_error($redis->get($redisKey));
+            return Json::decode($redis->get($redisKey));
         }
 
         $userTypeData = UserType::query()->where("user_id", $userId)->where("type", 1)->orderBy("id", "asc")->get()->toArray();

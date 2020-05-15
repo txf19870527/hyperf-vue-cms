@@ -42,10 +42,10 @@ class AppExceptionHandler extends ExceptionHandler
 
             $body = $packer->unpack($response->getBody()->getContents());
 
-            // 使用 ResponseCode 重新获取一遍错误信息。在 ResponseCode 获取不到的消息会赋值为空（防止一些敏感消息返回出去）
+            // 使用 ResponseCode 重新获取一遍错误信息。在 ResponseCode 获取不到的消息会赋值为 UNKNOWN_ERROR（防止一些敏感消息返回出去）
             // 如果 code 正好撞上的话 会覆盖为 ResponseCode 的错误消息，需要调整下 code 的值
             // 如果 code 为0（正确的code）用 UNKNOWN_ERROR 覆盖掉
-            $errorInfo = ResponseCode::error($throwable->getCode());
+            $errorInfo = ResponseCode::error($throwable->getCode(), $throwable->getMessage());
 
             $body['error']['code'] = $errorInfo['code'];
             $body['error']['message'] = $errorInfo['message'];

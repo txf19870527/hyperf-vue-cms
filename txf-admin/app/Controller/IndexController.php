@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 
-use Hyperf\HttpServer\Annotation\AutoController;
 use Hyperf\Utils\Parallel;
 
 /**
  * 后台首页相关接口
  * Class IndexController
  * @package App\Controller
- * @AutoController()
  */
 class IndexController extends AbstractController
 {

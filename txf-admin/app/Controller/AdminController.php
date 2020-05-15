@@ -5,13 +5,11 @@ namespace App\Controller;
 
 use App\Service\Interfaces\AdminServiceInterface;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
  * 后台员工相关接口
  * Class AdminController
  * @package App\Controller
- * @AutoController()
  */
 class AdminController extends AbstractController
 {

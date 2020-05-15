@@ -27,7 +27,8 @@ return [
             LogLevel::WARNING,
         ],
     ],
-    'request_log' => false,              // 记录请求日志开关，同时依赖 log_info 的配置
+    'request_log' => true,              // 记录请求日志开关，同时依赖 log_info 的配置
+    'request_log_response' => false,    // 请求日志是否记录响应值，一些列表值较大，prod环境看情况开启。dev环境无视该参数，强制开启
     'request_error_log' => true,        // 记录请求错误日志开关，同时依赖 log_error 的配置
     'log_info' => true,                 // info日志开关
     'log_warning' => true,              // warning日志开关

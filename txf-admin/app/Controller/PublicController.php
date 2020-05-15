@@ -8,13 +8,11 @@ use App\Com\Excel;
 use App\Com\File;
 use App\Service\Interfaces\AdminServiceInterface;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\HttpServer\Annotation\AutoController;
 use Hyperf\Redis\RedisFactory;
 
 /**
  * Class PublicController
  * @package App\Controller
- * @AutoController()
  */
 class PublicController extends AbstractController
 {
@@ -97,7 +95,7 @@ class PublicController extends AbstractController
     public function uploadExample()
     {
 
-        $body = $this->request->getAttribute('body');
+        $body = $this->request->getAttribute('upload_body');
 
         $body['row'] = Excel::getExcelRowCount($body['save_name']);
 
@@ -110,5 +108,20 @@ class PublicController extends AbstractController
 
         return $body;
 
+    }
+
+    /**
+     * 上传图片通用接口，需要权限验证
+     */
+    public function upload()
+    {
+        return true;
+//        $body = $this->request->getAttribute("body");
+//
+//        $uploadBody = $this->request->getAttribute("upload_body");
+//
+//        $body['url'] = env("IMAGE_HOST") . $uploadBody['relative_name'];
+//
+//        return $body;
     }
 }

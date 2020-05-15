@@ -1,21 +1,21 @@
 <?php
 
 
-namespace App\Service\Va;
+namespace App\Service\V1;
 
 
 use App\Com\RedisKeyMap;
 use App\Model\Type;
-use App\Service\Interfaces\Va\TypeServiceInterface;
+use App\Service\Interfaces\V1\TypeServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Redis\RedisFactory;
 use Hyperf\RpcServer\Annotation\RpcService;
-use Hyperf\Utils\Codec\Json;
+use App\Com\Json;
 
 /**
  * Class TypeService
- * @package App\Service\Va
- * @RpcService(name="TypeServiceVa", protocol="jsonrpc", server="jsonrpc")
+ * @package App\Service\V1
+ * @RpcService(name="TypeServiceV1", protocol="jsonrpc", server="jsonrpc")
  */
 class TypeService implements TypeServiceInterface
 {
@@ -35,7 +35,7 @@ class TypeService implements TypeServiceInterface
         $redisKey = RedisKeyMap::build(RedisKeyMap::TYPE_INCOME);
         $redis = $this->redisFactory->get("default");
         if ($redis->exists($redisKey)) {
-            return json_decode_with_out_error($redis->get($redisKey));
+            return Json::decode($redis->get($redisKey));
         }
 
         $typeData = Type::query()->where("type", 2)->orderBy("sort", "desc")->orderBy("id", "asc")->get()->toArray();
@@ -59,7 +59,7 @@ class TypeService implements TypeServiceInterface
         $redisKey = RedisKeyMap::build(RedisKeyMap::TYPE_EXPENSE);
         $redis = $this->redisFactory->get("default");
         if ($redis->exists($redisKey)) {
-            return json_decode_with_out_error($redis->get($redisKey));
+            return Json::decode($redis->get($redisKey));
         }
 
         $typeData = Type::query()->where("type", 1)->orderBy("sort", "desc")->orderBy("id", "asc")->get()->toArray();

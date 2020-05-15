@@ -32,7 +32,7 @@ export const requestApi = (url, data) => {
         url: requestUrl[url],
         method: 'post',
         data: data,
-        timeout: 2000
+        timeout: 9000
     });
 }
 

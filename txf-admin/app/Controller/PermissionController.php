@@ -5,13 +5,11 @@ namespace App\Controller;
 
 use App\Service\Interfaces\PermissionServiceInterface;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
  * 权限管理相关接口
  * Class PermissionController
  * @package App\Controller
- * @AutoController()
  */
 class PermissionController extends AbstractController
 {

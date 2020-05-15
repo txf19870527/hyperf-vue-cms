@@ -30,8 +30,8 @@
         data: function() {
             return {
                 param: {
-                    mobile: '',
-                    password: '',
+                    mobile: '13000000000',
+                    password: '111111',
                 },
                 rules: {
                     mobile: [{

@@ -6,13 +6,11 @@ namespace App\Controller;
 
 use App\Service\Interfaces\RoleServiceInterface;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
  * 角色管理相关接口
  * Class RoleController
  * @package App\Controller
- * @AutoController()
  */
 class RoleController extends AbstractController
 {

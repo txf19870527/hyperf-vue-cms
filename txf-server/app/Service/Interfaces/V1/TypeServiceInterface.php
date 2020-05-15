@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Interfaces\Va;
+namespace App\Service\Interfaces\V1;
 
 interface TypeServiceInterface
 {

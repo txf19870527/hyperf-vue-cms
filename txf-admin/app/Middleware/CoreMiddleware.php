@@ -5,7 +5,7 @@ namespace App\Middleware;
 
 use App\Com\ResponseCode;
 use Hyperf\HttpMessage\Stream\SwooleStream;
-use Hyperf\Utils\Codec\Json;
+use App\Com\Json;
 use Hyperf\Utils\Contracts\Arrayable;
 use Hyperf\Utils\Contracts\Jsonable;
 use Psr\Http\Message\ResponseInterface;
