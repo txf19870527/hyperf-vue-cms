@@ -46,7 +46,16 @@ class DbQueryExecutedListener implements ListenerInterface
                 }
             }
 
-            Log::append("sql", sprintf('[%s] %s', $event->time, $sql));
+            // 毫秒转秒
+            $useTime = (string)$event->time ?? 0;
+            $useTime = bcdiv($useTime, '1000', 4) . "s";
+
+            Log::append("sql", [
+                'use_time' => $useTime,
+                'sql' => $sql
+            ]);
+
+//            l($sql);
 
         }
     }

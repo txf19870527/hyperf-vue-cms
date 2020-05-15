@@ -47,7 +47,8 @@
         "hyperf/validation": "^1.1",
         "phpoffice/phpspreadsheet": "^1.10",
         "hyperf/rate-limit": "^1.1",
-        "hyperf/translation": "^1.1"
+        "hyperf/translation": "^1.1",
+        "league/csv": "^9.6"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",

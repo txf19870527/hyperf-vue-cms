@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Com\Log;
-use App\Model\Admin;
 use App\Service\AdminService;
-use App\Service\Interfaces\AdminServiceInterface;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Psr\Container\ContainerInterface;

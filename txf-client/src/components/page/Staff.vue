@@ -207,7 +207,7 @@
                     "admin_id": id
                 }).then(res => {
 
-                    this.roleForm = JSON.parse(res.data) || [];
+                    this.roleForm = res.data || [];
 
                     var that = this;
                     setTimeout(function() {
@@ -227,7 +227,7 @@
 
                 requestApi("staff", this.query).then(res => {
 
-                    var data = JSON.parse(res.data);
+                    let data = res.data;
 
                     this.tableData = data.data;
                     this.total = data.total || 0;
@@ -248,7 +248,7 @@
                 this.$confirm('确定要删除 [' + row.name + '] 吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    requestApi("staffMulDel", {
+                    requestApi("staffbatchDelete", {
                         "ids": [row.id]
                     }).then(res => {
                         this.$message.success('删除成功');
@@ -283,7 +283,7 @@
                         ids.push(this.multipleSelection[i].id);
                     }
 
-                    requestApi("staffMulDel", {
+                    requestApi("staffbatchDelete", {
                         "ids": ids
                     }).then(res => {
                         this.$message.success(`删除了${str}`);

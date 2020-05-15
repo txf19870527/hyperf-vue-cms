@@ -18,7 +18,7 @@ interface AbstractInterface
      * @param array $ids
      * @return mixed
      */
-    public function mulDel(array $ids);
+    public function batchDelete(array $ids);
 
     /**
      * 更新

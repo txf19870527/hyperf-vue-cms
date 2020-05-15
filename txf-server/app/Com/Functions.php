@@ -49,6 +49,25 @@ function json_decode_with_out_error($data)
     return \json_decode($data, true);
 }
 
+function array_slimming(array $array, array $slimmingKeys, array $forgetKeys = [])
+{
+    foreach ($array as &$data) {
+        foreach ($slimmingKeys as $k => $v) {
+            if (!empty($data[$k])) {
+                $data[$k] = array_only($data[$k], $v);
+            }
+        }
+
+        foreach ($forgetKeys as $key) {
+            if (isset($data[$key]) || array_key_exists($key, $array)) {
+                unset($data[$key]);
+            }
+        }
+    }
+
+    return $array;
+}
+
 function list_to_tree($data, $primaryKey = 'id', $foreignkey = 'pid', $childKey = 'subs')
 {
 
@@ -73,6 +92,24 @@ function list_to_tree($data, $primaryKey = 'id', $foreignkey = 'pid', $childKey 
     return $tree;
 }
 
+/**
+ * 不区分大小写的 in_array
+ * @param string $find
+ * @param array $array
+ */
+function in_array_UpLow(string $find, array $array)
+{
+    $find = strtolower($find);
+
+    foreach ($array as $v) {
+        if (strtolower($v) == $find) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function p($data)
 {
     print_r($data);
@@ -91,9 +128,23 @@ function c($obj)
     echo PHP_EOL;
 }
 
+function l(string $string)
+{
+    echo $string;
+    echo PHP_EOL;
+}
+
 function uuid()
 {
     return md5(mt_rand(0,9999) . 'ssfwoq.cv;rwa212;' . microtime(true) . mt_rand(0, 9999));
+}
+
+function stdToArray($stdArr)
+{
+    foreach ($stdArr as &$v) {
+        $v = (array)$v;
+    }
+    return $stdArr;
 }
 
 /**

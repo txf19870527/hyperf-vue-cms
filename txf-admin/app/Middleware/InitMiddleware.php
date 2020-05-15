@@ -42,16 +42,7 @@ class InitMiddleware implements MiddlewareInterface
         // 记录请求日志
         $this->requestLog($request, $response);
 
-        // 下载文件等
-        if ($response instanceof \Hyperf\HttpServer\Response) {
-            return $response;
-        }
-
-        // 统一JSON返回
-        $data = Json::encode(ResponseCode::response($response->getBody()->getContents()));
-
-        return $response->withAddedHeader('content-type', 'application/json; charset=utf-8')->withBody(new SwooleStream($data));
-
+        return $response;
     }
 
     protected function initRequest(ServerRequestInterface $request):ServerRequestInterface
@@ -60,8 +51,9 @@ class InitMiddleware implements MiddlewareInterface
         $uri = $request->getUri()->getPath();
 
         if (in_array_UpLow($uri, config("upload.upload_uri")) || in_array_UpLow($uri, config("upload.import_uri")) ) {
-            $token = !empty($request->getParsedBody()['token']) ? (string)$request->getParsedBody()['token'] : '';
-            $body = [];
+            $body = $request->getParsedBody() ?? [];
+            $token = $body['token'] ?? '';
+            unset($body['token']);
         } else {
             $body = $request->getBody()->getContents();
             $body = (array)json_decode_with_out_error($body);
@@ -83,7 +75,7 @@ class InitMiddleware implements MiddlewareInterface
         ]);
 
         return $request->withAttribute('body', $body)
-                        ->withAttribute('token', $token);
+            ->withAttribute('token', $token);
     }
 
 

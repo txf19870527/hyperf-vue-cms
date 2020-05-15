@@ -18,7 +18,7 @@ class Page
      * @param string $pageName
      * @return array
      */
-    public static function pageByParams($obj, array $params, array $columns = ['*'], string $pageName = 'page' )
+    public static function pageByParams($obj, array $params, array $columns = ['*'], string $pageName = 'page')
     {
         return self::page($obj, $params['page'] ?? 1, $params['size'] ?? 20, $columns, $pageName);
     }
@@ -31,7 +31,7 @@ class Page
      * @param array $columns
      * @param string $pageName
      */
-    public static function page( $obj, int $page = 1, int $perPage = 2, array $columns = ['*'], string $pageName = 'page' )
+    public static function page($obj, int $page = 1, int $perPage = 2, array $columns = ['*'], string $pageName = 'page')
     {
         if ($page < 1) {
             $page = 1;
@@ -66,6 +66,71 @@ class Page
         }
 
         throw new BusinessException(ResponseCode::PAGE_ERROR);
+    }
+
+    /**
+     * 游标分页。数据量较大时，用 where id | 时间戳 等 过滤数据
+     * @param $obj 目前只支持模型qb
+     * @param array $cursor ["db_key" => ["value" => "db_value(初始化不要value这个key,否则按空进行where)","order"=>"asc|desc"]]
+     * @param int $perPage
+     * @param array $columns
+     */
+    public static function pageCursor($obj, array $cursor = [], int $perPage = 20, array $columns = ["*"])
+    {
+
+        if (!$obj instanceof \Hyperf\Database\Model\Builder) {
+            throw new BusinessException(ResponseCode::PAGE_ERROR);
+        }
+
+        if ($perPage > 100) {
+            $perPage = 100;
+        }
+
+        if ($perPage < 1) {
+            $perPage = 20;
+        }
+
+
+        if (!empty($cursor)) {
+            foreach ($cursor as $k => $v) {
+                if (!empty($v['order']) && strtolower($v['order']) == 'desc') {
+
+                    if (isset($v['value'])) {
+                        $obj->where($k, "<", $v['value']);
+                    }
+
+                    $obj->orderBy($k, "desc");
+                } else {
+
+                    if (isset($v['value'])) {
+                        $obj->where($k, ">", $v['value']);
+                    }
+
+                    $obj->orderBy($k, "asc");
+                }
+            }
+        }
+
+
+        $data = $obj->limit($perPage)->get($columns)->toArray();
+
+        if (!empty($data)) {
+            $index = count($data) - 1;
+            $lastData = $data[$index];
+
+            foreach ($cursor as $k => $v) {
+                $cursor[$k]["value"] = $lastData[$k];
+            }
+        } else {
+            $cursor = [];
+        }
+
+        return [
+            'cursor' => $cursor,
+            'data' => $data
+        ];
+
+
     }
 
     /**

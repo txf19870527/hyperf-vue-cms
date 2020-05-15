@@ -103,16 +103,34 @@ class Log
      */
     public static function __callStatic($name, $arguments)
     {
-        if (!in_array($name, ['info','warning','error'])) {
+        if (!in_array($name, ['info', 'warning', 'error'])) {
             throw new BusinessException(ResponseCode::LOG_PARMAS_ERROR);
         }
 
+        if ($name == 'info' && empty(config("log_info"))) {
+            return false;
+        } elseif ($name == 'warning' && empty(config("log_warning"))) {
+            return false;
+        } elseif ($name == 'error' && empty(config("log_error"))) {
+            return false;
+        }
+
         $context = array($arguments[0]);
-        $message = (string)$arguments[1];
+        $message = $arguments[1] ?? '';
 
         $logger = ApplicationContext::getContainer()->get(LoggerFactory::class)->get("default");
         $logger->{$name}($message, $context);
 
+    }
+
+    public static function parseException(\Throwable $e): array
+    {
+        return [
+            'code' => $e->getCode(),
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ];
     }
 
 }

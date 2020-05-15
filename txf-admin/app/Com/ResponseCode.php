@@ -139,6 +139,25 @@ class ResponseCode extends AbstractConstants
      */
     const ORIGIN_PASSWORD_ERROR = -24;
 
+    /**
+     * @Message("收支类型已存在")
+     */
+    const TYPE_TITLE_EXISTS = -25;
+
+    /**
+     * @Message("数据不存在")
+     */
+    const DATA_NOT_EXISTS = -26;
+
+    /**
+     * @Message("数据已存在")
+     */
+    const DATA_EXISTS = -27;
+
+    /**
+     * @Message("请求微信接口失败")
+     */
+    const REQUEST_WECHAT_ERROR = -28;
 
 
     public static function errorFormat($errorCode, $message): array
@@ -149,7 +168,7 @@ class ResponseCode extends AbstractConstants
 
         return [
             'code' => $errorCode,
-            'message' => $message
+            'message' => $message ?: '系统维护'
         ];
     }
 
@@ -163,7 +182,7 @@ class ResponseCode extends AbstractConstants
 
         return [
             'code' => $errorCode,
-            'message' => $message
+            'message' => $message ?: '系统维护'
         ];
     }
 

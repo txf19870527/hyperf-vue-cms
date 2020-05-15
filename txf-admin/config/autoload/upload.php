@@ -10,6 +10,14 @@ $config = [
     'import_uri' => [   // 导入文件，存放临时目录，根据需求按需清理（如上传的是EXCEL，解析入库后，不需要保存该文件）
         '/public/uploadExample'
     ],
+
+    'upload_not_require_uri' => [ // 文件非必填uri
+
+    ],
+    'import_not_require_uri' => [ // 文件非必填uri
+        
+    ],
+    
     // 上传相关配置
     'upload_max_size' => 2 * 1024 * 1024,        // 不要设置的太大，如果超过2M的话，需要同时调整swoole package_max_length 配置
     'upload_allow_suffix' => ['png','jpg','jpeg'],

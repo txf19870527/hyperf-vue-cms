@@ -191,7 +191,7 @@
                     "role_id": id
                 }).then(res => {
 
-                    var data = JSON.parse(res.data) || [];
+                    let data = res.data || [];
                     this.permissionData = data.data;
                     this.defaultCheckedKeys = data.default_checked_keys;
                 }).catch(error => {
@@ -208,7 +208,7 @@
             getData() {
 
                 requestApi("role", this.query).then(res => {
-                    var data = JSON.parse(res.data);
+                    let data = res.data;
 
                     this.tableData = data.data;
                     this.total = data.total || 0;
@@ -229,7 +229,7 @@
                 this.$confirm('确定要删除 [' + row.role_name + '] 吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    requestApi("roleMulDel", {
+                    requestApi("rolebatchDelete", {
                         "ids": [row.id]
                     }).then(res => {
                         this.$message.success('删除成功');
@@ -265,7 +265,7 @@
                         ids.push(this.multipleSelection[i].id);
                     }
 
-                    requestApi("roleMulDel", {
+                    requestApi("rolebatchDelete", {
                         "ids": ids
                     }).then(res => {
                         this.$message.success(`删除了${str}`);

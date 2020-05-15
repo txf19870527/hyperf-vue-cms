@@ -90,5 +90,16 @@ abstract class Model extends BaseModel /*implements CacheableInterface*/
         return $count ? true : false;
     }
 
+    public static function existsInsertDataByArray($params)
+    {
+        $count = static::query()->where($params)->count();
+        return $count ? true : false;
+    }
+
+    public static function existsUpdateDataByArray($params, $id, $primaryKey = "id")
+    {
+        $count = static::query()->where($params)->where($primaryKey, "!=", $id)->count();
+        return $count ? true : false;
+    }
 
 }

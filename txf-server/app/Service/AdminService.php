@@ -4,7 +4,6 @@
 namespace App\Service;
 
 
-use App\Com\Log;
 use App\Com\Page;
 use App\Com\RedisKeyMap;
 use App\Com\ResponseCode;
@@ -222,7 +221,7 @@ class AdminService implements AdminServiceInterface
      * @param array $ids
      * @return mixed|void
      */
-    public function mulDel(array $ids)
+    public function batchDelete(array $ids)
     {
 
         try {

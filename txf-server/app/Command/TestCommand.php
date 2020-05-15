@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Model\Permission;
 use App\Service\PermissionService;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
@@ -41,6 +42,7 @@ class TestCommand extends HyperfCommand
 
     public function handle()
     {
-        // 调试脚本
+
+        return true;
     }
 }

@@ -211,7 +211,7 @@ class PermissionService implements PermissionServiceInterface
     /**
      * 批量删除
      */
-    public function mulDel($ids)
+    public function batchDelete($ids)
     {
         try {
             Db::beginTransaction();
@@ -256,6 +256,8 @@ class PermissionService implements PermissionServiceInterface
             return $returnData;
         }
 
+        $pids = array_unique(array_column($data, "pid"));
+
         foreach ($data as $k => $v) {
 
             if (!$v['status']) {
@@ -264,7 +266,7 @@ class PermissionService implements PermissionServiceInterface
 
             if (!empty($v['roles'])) {
                 $v['roles'] = array_column($v['roles'], 'id');
-                if (in_array($roleId, $v['roles'])) {
+                if (in_array($roleId, $v['roles']) && !in_array($v['id'], $pids)) {
                     $returnData['default_checked_keys'] []= $v['id'];
                 }
             }
@@ -273,6 +275,7 @@ class PermissionService implements PermissionServiceInterface
         }
 
         $returnData['data'] = list_to_tree($data);
+
 
         return $returnData;
     }

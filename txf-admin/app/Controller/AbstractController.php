@@ -62,14 +62,14 @@ abstract class AbstractController
     /**
      * 删除/批量通用方法
      */
-    public function mulDel()
+    public function batchDelete()
     {
         if (!$this->useDefault && empty($this->service)) {
             throw new BusinessException(ResponseCode::UNKNOWN_ERROR);
         }
 
         $body = $this->request->getAttribute('body');
-        return $this->service->mulDel($body['ids']);
+        return $this->service->batchDelete($body['ids']);
     }
 
     /**

@@ -60,7 +60,7 @@ class RoleService implements RoleServiceInterface
      * @param array $ids
      * @return bool|mixed
      */
-    public function mulDel(array $ids)
+    public function batchDelete(array $ids)
     {
         try {
             Db::beginTransaction();

@@ -134,7 +134,7 @@
         created() {
             this.initUpload();
             requestApi('index', {}).then(res => {
-                var data = JSON.parse(res.data);
+                let data = res.data;
                 this.todoList = data.todo_list;
                 this.options = data.week_sold;
                 this.options2 = data.month_sold;

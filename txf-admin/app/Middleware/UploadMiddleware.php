@@ -60,6 +60,12 @@ class UploadMiddleware implements MiddlewareInterface
         $uploadFile = current($uploadFile);
 
         if (empty($uploadFile) || !$uploadFile instanceof UploadedFileInterface) {
+
+            $notRequireUri = config("upload.{$type}_not_require_uri");
+            if (in_array_UpLow($uri, $notRequireUri)) {
+                return $request;
+            }
+
             throw new BusinessException(ResponseCode::UPLOAD_NOT_EXISTS);
         }
 
@@ -97,29 +103,34 @@ class UploadMiddleware implements MiddlewareInterface
             throw new BusinessException(ResponseCode::UPLOAD_TYPE_ERROR);
         }
 
-        if (strpos($fileName, '/') !== false) {
-            throw new BusinessException(ResponseCode::UPLOAD_TYPE_ERROR);
-        }
-
         if ($type == 'import') {
             $saveName = File::buildTempFileName('', $suffix);
+            $relativeName = str_replace(TEMP_PATH, '', $saveName);
         } else {
             $saveName = File::buildFileName('', $suffix);
+            $relativeName = str_replace(UPLOAD_PATH, '', $saveName);
         }
 
         $uploadFile->moveTo($saveName);
+
+        chmod($saveName, 0644);
+
+        $fileName = pathinfo($fileName);
+        $fileName = $fileName['basename'];
 
         $body = [
             'size' => $uploadFile->getSize(),
             'file_name' => $fileName,
             'save_name' => $saveName,
+            'relative_name' => $relativeName,
             'media_type' => $uploadFile->getClientMediaType()
         ];
 
         // 上传文件的信息追加到日志中
         Log::append('upload_info', $body);
 
-        $request = $request->withParsedBody(null)->withAttribute("body", $body);
+        // 追加上传信息
+        $request = $request->withAttribute("upload_body", $body);
 
         return $request;
 

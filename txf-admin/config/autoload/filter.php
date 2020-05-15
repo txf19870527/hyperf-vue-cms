@@ -10,7 +10,7 @@ $config = [
         'white' => ['mobile', 'password'],
         'black' => []
     ],
-    '/admin/mulDel' => [
+    '/admin/batchDelete' => [
         'white' => ['ids']
     ],
     '/admin/update' => [
@@ -25,7 +25,7 @@ $config = [
     '/admin/updatePassword' => [
         'white' => ['old_password','new_password','again_password']
     ],
-    '/role/mulDel' => [
+    '/role/batchDelete' => [
         'white' => ['ids']
     ],
     '/role/update' => [
@@ -40,7 +40,7 @@ $config = [
     '/role/savePermissions' => [
         'white' => ['id', 'permissions'],
     ],
-    '/permission/mulDel' => [
+    '/permission/batchDelete' => [
         'white' => ['ids']
     ],
     '/permission/update' => [

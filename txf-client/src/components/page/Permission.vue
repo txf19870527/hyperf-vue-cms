@@ -232,7 +232,7 @@
             resetCascader() {
                 // 下拉权限搜索
                 requestApi("permissionCascader", {}).then(res => {
-                    this.options = JSON.parse(res.data) || [];
+                    this.options = res.data || [];
                 }).catch(error => {});
             },
             // 搜索框上级权限变更，更改父级ID
@@ -289,7 +289,7 @@
             getData() {
 
                 requestApi("permission", this.query).then(res => {
-                    var data = JSON.parse(res.data);
+                    let data = res.data;
 
                     this.tableData = data.data;
                     this.total = data.total || 0;
@@ -312,7 +312,7 @@
                 this.$confirm('确定要删除 [' + row.title + '] 吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    requestApi("permissionMulDel", {
+                    requestApi("permissionbatchDelete", {
                         "ids": [row.id]
                     }).then(res => {
                         this.$message.success('删除成功');
@@ -349,7 +349,7 @@
                         ids.push(this.multipleSelection[i].id);
                     }
 
-                    requestApi("permissionMulDel", {
+                    requestApi("permissionbatchDelete", {
                         "ids": ids
                     }).then(res => {
                         this.$message.success(`删除了${str}`);

@@ -15,7 +15,7 @@ $config = [
 //    '/public/login#message#' => [
 //        'size' => '手机号不合法'
 //    ],
-    '/admin/mulDel' => [
+    '/admin/batchDelete' => [
         'ids' => 'required|array'
     ],
     '/admin/update' => [
@@ -40,7 +40,7 @@ $config = [
         'new_password' => 'required|string|min:6',
         'again_password' => 'required|same:new_password|string|min:6',
     ],
-    '/role/mulDel' => [
+    '/role/batchDelete' => [
         'ids' => 'required|array'
     ],
     '/role/update' => [
@@ -59,7 +59,7 @@ $config = [
         'id' => 'required|integer',
         'permissions' => 'array'
     ],
-    '/permission/mulDel' => [
+    '/permission/batchDelete' => [
         'ids' => 'required|array'
     ],
     '/permission/update' => [

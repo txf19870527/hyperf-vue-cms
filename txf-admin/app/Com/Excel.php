@@ -213,4 +213,20 @@ class Excel
         return $worksheet->getHighestRow();
     }
 
+    /**
+     * @param $time
+     * @return int
+     * @throws \Exception
+     * 将 EXCEL的 float时间转成时间戳
+     */
+    public static function toTime($time)
+    {
+        try {
+            return  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($time);
+        } catch (\Throwable $e) {
+            return 0;
+        }
+
+    }
+
 }

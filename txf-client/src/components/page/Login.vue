@@ -54,7 +54,7 @@
 
                         requestApi("login", this.param).then(res => {
 
-                            var data = JSON.parse(res.data);
+                            let data = res.data;
                             localStorage.setItem('cms_token', data.token);
                             localStorage.setItem('cms_username', data.name);
                             localStorage.setItem('cms_menus', JSON.stringify(data.menus));

@@ -5,13 +5,45 @@ function array_only(array $array, array $keys): array
     return array_intersect_key($array, array_flip($keys));
 }
 
+/**
+ * 出现乱码可以使用 chr ord 来找 ASCII码
+ * @param  array  $data [description]
+ * @return [type]       [description]
+ */
+function clearHtml(array $data)
+{
+    if (is_array($data)) {
+        foreach ($data as &$v) {
+            $v = str_replace([chr(239),chr(187),chr(191)], '', trim(strip_tags($v)));
+        }
+
+        return $data;
+    }
+
+}
+
 function array_forget(array $array, array $keys): array
 {
-    foreach ($keys as $k) {
-        if (isset($array[$k]) || array_key_exists($k, $array)) {
-            unset($array[$k]);
+    if (empty($array)) {
+        return [];
+    }
+
+    if (is_array(current($array))) {
+        foreach ($array as $key => $val) {
+            foreach ($keys as $k) {
+                if (isset($val[$k]) || array_key_exists($k, $val)) {
+                    unset($array[$key][$k]);
+                }
+            }
+        }
+    } else {
+        foreach ($keys as $k) {
+            if (isset($array[$k]) || array_key_exists($k, $array)) {
+                unset($array[$k]);
+            }
         }
     }
+
     return $array;
 }
 
@@ -32,6 +64,49 @@ function json_decode_with_out_error($data)
     }
 
     return \json_decode($data, true);
+}
+
+function array_slimming(array $array, array $slimmingKeys, array $forgetKeys = [])
+{
+    foreach ($array as &$data) {
+        foreach ($slimmingKeys as $k => $v) {
+            if (!empty($data[$k])) {
+                $data[$k] = array_only($data[$k], $v);
+            }
+        }
+
+        foreach ($forgetKeys as $key) {
+            if (isset($data[$key]) || array_key_exists($key, $array)) {
+                unset($data[$key]);
+            }
+        }
+    }
+
+    return $array;
+}
+
+function list_to_tree($data, $primaryKey = 'id', $foreignkey = 'pid', $childKey = 'subs')
+{
+
+    $tree = [];
+    $refer = [];
+
+    foreach ($data as $key => $value) {
+        $refer[$value[$primaryKey]] = &$data[$key];
+    }
+
+    foreach ($data as $key => $value) {
+        $parentId = $value[$foreignkey];
+        if (0 == $parentId) {
+            $tree[] = &$data[$key];
+        } else {
+            if (isset($refer[$parentId])) {
+                $parent = &$refer[$parentId];
+                $parent[$childKey][] = &$data[$key];
+            }
+        }
+    }
+    return $tree;
 }
 
 /**
@@ -70,9 +145,23 @@ function c($obj)
     echo PHP_EOL;
 }
 
+function l(string $string)
+{
+    echo $string;
+    echo PHP_EOL;
+}
+
 function uuid()
 {
     return md5(mt_rand(0,9999) . 'ssfwoq.cv;rwa212;' . microtime(true) . mt_rand(0, 9999));
+}
+
+function stdToArray($stdArr)
+{
+    foreach ($stdArr as &$v) {
+        $v = (array)$v;
+    }
+    return $stdArr;
 }
 
 /**

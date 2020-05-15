@@ -14,6 +14,14 @@ class RedisKeyMap
 
     const REQUEST_LIMIT = 'request_limit';
 
+    const TYPE_INCOME = 'type_income';
+
+    const TYPE_EXPENSE = "type_expense";
+
+    const API_TOKEN = "api_token";
+
+    const API_TOKEN_CACHE = "api_token_cache";
+
     /**
      * @param string $key 使用 self::xxx的形式传入
      * @param array $args
