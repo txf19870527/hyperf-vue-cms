@@ -6,7 +6,14 @@ import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
-import config from './config';
+import api from "./api/axios";
+import {
+    Message
+} from "element-ui";
+
+
+Vue.prototype.$api = api;
+Vue.prototype.$Message = Message;
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI, {
@@ -36,4 +43,3 @@ new Vue({
     router,
     render: h => h(App)
 }).$mount('#app');
-

@@ -7,18 +7,16 @@ declare(strict_types=1);
  * @link     https://www.hyperf.io
  * @document https://doc.hyperf.io
  * @contact  group@hyperf.io
- * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
-use Hyperf\ModelCache\Handler\RedisHandler;
-
 return [
     'default' => [
         'driver' => env('DB_DRIVER', 'mysql'),
         'host' => env('DB_HOST', 'localhost'),
         'database' => env('DB_DATABASE', 'txf'),
+        'port' => env('DB_PORT', 3306),
         'username' => env('DB_USERNAME', 'root'),
-        'password' => env('DB_PASSWORD', '123456'),
+        'password' => env('DB_PASSWORD', '12345678'),
         'charset' => env('DB_CHARSET', 'utf8'),
         'collation' => env('DB_COLLATION', 'utf8_unicode_ci'),
         'prefix' => env('DB_PREFIX', 'txf_'),
@@ -29,14 +27,6 @@ return [
             'wait_timeout' => 3.0,
             'heartbeat' => -1,
             'max_idle_time' => (float) env('DB_MAX_IDLE_TIME', 60),
-        ],
-        'cache' => [
-            'handler' => Hyperf\ModelCache\Handler\RedisHandler::class,
-            'cache_key' => 'mc:%s:m:%s:%s:%s',
-            'prefix' => 'default',
-            'ttl' => 3600 * 24,
-            'empty_model_ttl' => 600,
-            'load_script' => true,
         ],
         'commands' => [
             'gen:model' => [

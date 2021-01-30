@@ -5,6 +5,37 @@ function array_only(array $array, array $keys): array
     return array_intersect_key($array, array_flip($keys));
 }
 
+/**
+ * 出现乱码可以使用 chr ord 来找 ASCII码
+ * @param array $data
+ * @return array
+ */
+function clearHtml(array $data)
+{
+    foreach ($data as &$v) {
+        $v = str_replace([chr(239), chr(187), chr(191)], '', trim(strip_tags($v)));
+    }
+
+    return $data;
+}
+
+function nullToEmpty(array $data)
+{
+    foreach ($data as &$v) {
+        $v = $v === null ? '' : $v;
+    }
+    return $data;
+}
+
+function array_trim(array $data)
+{
+    foreach ($data as &$v) {
+        $v = trim($v);
+    }
+
+    return $data;
+}
+
 function array_forget(array $array, array $keys): array
 {
     if (empty($array)) {
@@ -87,6 +118,7 @@ function list_to_tree($data, $primaryKey = 'id', $foreignkey = 'pid', $childKey 
  * 不区分大小写的 in_array
  * @param string $find
  * @param array $array
+ * @return bool
  */
 function in_array_UpLow(string $find, array $array)
 {
@@ -127,7 +159,7 @@ function l(string $string)
 
 function uuid()
 {
-    return md5(mt_rand(0,9999) . 'ssfwoq.cv;rwa212;' . microtime(true) . mt_rand(0, 9999));
+    return md5(mt_rand(0, 9999) . 'ssfwoq.cv;rwa212;' . microtime(true) . mt_rand(0, 9999));
 }
 
 function stdToArray($stdArr)
@@ -142,7 +174,7 @@ function stdToArray($stdArr)
  * 将二维数组中的某个一维数组的值作为key
  * @param $arr
  * @param $key
- * @param bool $type  如果 key 重复 true:覆盖 false:不覆盖
+ * @param bool $type 如果 key 重复 true:覆盖 false:不覆盖
  * @param string $delimiter
  * @return array
  */
@@ -177,4 +209,30 @@ function array_reset_key(array $arr, $key, bool $type = true, $delimiter = '_')
 
     }
     return $returnArr;
+}
+
+function formatMoney($amount)
+{
+    return number_format($amount, "2", ".", "");
+}
+
+function encrypt($password)
+{
+    $hash = password_hash($password, PASSWORD_BCRYPT, [
+        'cost' => 10,
+    ]);
+
+    return $hash;
+}
+
+function decrypt($password, $hashedValue)
+{
+    return password_verify($password, $hashedValue);
+}
+
+function myMicrotime()
+{
+    [$msec, $sec] = explode(' ', microtime());
+    $msectime = sprintf('%.0f', (floatval($msec) + floatval($sec)) * 1000);
+    return (float)$msectime;
 }

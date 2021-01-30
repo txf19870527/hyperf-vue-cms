@@ -1,14 +1,15 @@
 <?php
 
 declare (strict_types=1);
+
 namespace App\Model;
 
 /**
- * @property int $id 
- * @property int $admin_id 
- * @property int $role_id 
- * @property string $created_at 
- * @property string $updated_at 
+ * @property int $id
+ * @property int $admin_id
+ * @property int $role_id
+ * @property string $created_at
+ * @property string $updated_at
  */
 class AdminRole extends Model
 {
@@ -29,7 +30,7 @@ class AdminRole extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'admin_id' => 'integer', 'role_id' => 'integer'];
+    protected $casts = [];
     /**
      * @var array
      * 黑名单

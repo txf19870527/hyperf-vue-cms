@@ -9,18 +9,18 @@ use App\Exception\BusinessException;
 
 class Page
 {
-
     /**
      * 根据数组参数处理分页（直接把前端传过来的数组扔进来）
      * @param $obj
      * @param array $params
+     * @param array $map
      * @param array $columns
      * @param string $pageName
      * @return array
      */
-    public static function pageByParams($obj, array $params, array $columns = ['*'], string $pageName = 'page')
+    public static function pageByParams($obj, array $params, array $map = [], array $columns = ['*'], string $pageName = 'page')
     {
-        return self::page($obj, $params['page'] ?? 1, $params['size'] ?? 20, $columns, $pageName);
+        return self::page($obj, $params['page'] ?? 1, $params['row'] ?? 10, $map, $columns, $pageName);
     }
 
     /**
@@ -28,10 +28,12 @@ class Page
      * @param $obj
      * @param int $page
      * @param int $perPage
+     * @param array $map
      * @param array $columns
      * @param string $pageName
+     * @return array
      */
-    public static function page($obj, int $page = 1, int $perPage = 2, array $columns = ['*'], string $pageName = 'page')
+    public static function page($obj, int $page = 1, int $perPage = 10, array $map = [], array $columns = ['*'], string $pageName = 'page')
     {
         if ($page < 1) {
             $page = 1;
@@ -42,10 +44,10 @@ class Page
         }
 
         if ($perPage < 1) {
-            $perPage = 20;
+            $perPage = 10;
         }
 
-        return self::pageUnlimited($obj, $page, $perPage, $columns, $pageName);
+        return self::pageUnlimited($obj, $page, $perPage, $map, $columns, $pageName);
     }
 
     /**
@@ -53,16 +55,17 @@ class Page
      * @param $obj
      * @param int $page
      * @param int $perPage
+     * @param array $map
      * @param array $columns
      * @param string $pageName
-     * @return array
+     * @return array|mixed
      */
-    public static function pageUnlimited($obj, int $page = 1, int $perPage = 20, array $columns = ['*'], string $pageName = 'page')
+    public static function pageUnlimited($obj, int $page = 1, int $perPage = 10, array $map = [], array $columns = ['*'], string $pageName = 'page')
     {
         if ($obj instanceof \Hyperf\Database\Model\Builder) {
-            return self::modelPage($obj, $page, $perPage, $columns, $pageName);
+            return self::modelPage($obj, $page, $perPage, $map, $columns, $pageName);
         } elseif ($obj instanceof \Hyperf\Database\Query\Builder) {
-            return self::queryPage($obj, $page, $perPage, $columns, $pageName);
+            return self::queryPage($obj, $page, $perPage, $map, $columns, $pageName);
         }
 
         throw new BusinessException(ResponseCode::PAGE_ERROR);
@@ -70,12 +73,13 @@ class Page
 
     /**
      * 游标分页。数据量较大时，用 where id | 时间戳 等 过滤数据
-     * @param $obj 目前只支持模型qb
-     * @param array $cursor ["db_key" => ["value" => "db_value(初始化不要value这个key,否则按空进行where)","order"=>"asc|desc"]]
+     * @param $obj
+     * @param array $cursor
      * @param int $perPage
      * @param array $columns
+     * @return array
      */
-    public static function pageCursor($obj, array $cursor = [], int $perPage = 20, array $columns = ["*"])
+    public static function pageCursor($obj, array $cursor = [], int $perPage = 10, array $columns = ["*"])
     {
 
         if (!$obj instanceof \Hyperf\Database\Model\Builder) {
@@ -87,7 +91,7 @@ class Page
         }
 
         if ($perPage < 1) {
-            $perPage = 20;
+            $perPage = 10;
         }
 
 
@@ -138,11 +142,12 @@ class Page
      * @param \Hyperf\Database\Model\Builder $obj
      * @param int $page
      * @param int $perPage
+     * @param array $map
      * @param array $columns
      * @param string $pageName
-     * @return array
+     * @return mixed
      */
-    private static function modelPage(\Hyperf\Database\Model\Builder $obj, int $page, int $perPage, array $columns, string $pageName)
+    private static function modelPage(\Hyperf\Database\Model\Builder $obj, int $page, int $perPage, array $map = [], array $columns, string $pageName)
     {
         $res = $obj->paginate($perPage, $columns, $pageName, $page)->toArray();
 
@@ -155,6 +160,10 @@ class Page
         unset($res['prev_page_url']);
         unset($res['to']);
 
+        if (!empty($map) && !empty($res['data'])) {
+            $res['data'] = BusinessMap::processData($res['data'], $map);
+        }
+
         return $res;
     }
 
@@ -163,11 +172,12 @@ class Page
      * @param \Hyperf\Database\Query\Builder $obj
      * @param int $page
      * @param int $perPage
+     * @param array $map
      * @param array $columns
      * @param string $pageName
      * @return array
      */
-    private static function queryPage(\Hyperf\Database\Query\Builder $obj, int $page, int $perPage, array $columns, string $pageName)
+    private static function queryPage(\Hyperf\Database\Query\Builder $obj, int $page, int $perPage, array $map = [], array $columns, string $pageName)
     {
 
         $total = $obj->getCountForPagination();
@@ -190,6 +200,10 @@ class Page
         unset($res['prev_page_url']);
         unset($res['to']);
 
+        if (!empty($map) && !empty($res['data'])) {
+            $res['data'] = BusinessMap::processData($res['data'], $map);
+        }
+        
         return $res;
     }
 }

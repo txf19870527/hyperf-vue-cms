@@ -1,5 +1,13 @@
 # hyperf-vue-cms
 
+# 2.x版本更新
+
+2.x版本基于hyperf2.x版本开发，2.x版本和1.x版本不兼容
+
+2.x版本修复若干bug、优化代码
+
+综合考虑开发便捷性、项目规模，2.x版本去掉了json-rpc层，将 `txf-admin` 合入 `txf-server` ，简化项目
+
 # 介绍
 基于 `hyperf` + `vue-manage-system` 开发的后台管理系统。
 

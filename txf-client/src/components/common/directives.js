@@ -49,7 +49,7 @@ Vue.directive('dialogDrag', {
                 styT = +styT.replace(/\px/g, '');
             };
 
-            document.onmousemove = function(e) {
+            document.onmousemove = function (e) {
                 // 通过事件委托，计算移动的距离 
                 let left = e.clientX - disX;
                 let top = e.clientY - disY;
@@ -71,7 +71,7 @@ Vue.directive('dialogDrag', {
                 dragDom.style.cssText += `;left:${left + styL}px;top:${top + styT}px;`;
             };
 
-            document.onmouseup = function(e) {
+            document.onmouseup = function (e) {
                 document.onmousemove = null;
                 document.onmouseup = null;
             };

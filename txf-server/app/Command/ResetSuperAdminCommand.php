@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\AdminService;
+use App\Services\AdminService;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Psr\Container\ContainerInterface;
@@ -23,7 +23,7 @@ class ResetSuperAdminCommand extends HyperfCommand
     {
         $this->container = $container;
 
-        parent::__construct('reset_admin:command');
+        parent::__construct('txf:reset_admin');
     }
 
     public function configure()
@@ -42,9 +42,9 @@ class ResetSuperAdminCommand extends HyperfCommand
         /**************配置重置信息****************/
 
         $resetData = [
-            'name' => '1',
-            'mobile' => '1',
-            'password' => '1',
+//            'name' => '1',
+//            'mobile' => '1',
+            'password' => '123456',
             'login_error_times' => 0
         ];
 
@@ -57,7 +57,6 @@ class ResetSuperAdminCommand extends HyperfCommand
         $adminService->resetSuperAdmin($resetData, $id);
 
         $this->line("重置成功");
-
 
 
         return true;

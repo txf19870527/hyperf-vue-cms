@@ -37,7 +37,7 @@ class ChangeAdminRoleListener implements ListenerInterface
     /**
      * @param ChangeAdminRoleEvent $event
      */
-    public function process(object $event)
+    public function process($event)
     {
         if ($event->adminRoles) {
             $redis = $this->container->get(RedisFactory::class)->get("default");

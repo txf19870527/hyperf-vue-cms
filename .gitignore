@@ -5,9 +5,6 @@
 .idea/
 .git/
 txf-client/node_modules/
-txf-admin/runtime/
-txf-admin/vendor/
-txf-admin/public/
 txf-server/runtime/
 txf-server/vendor/
 txf-server/public/

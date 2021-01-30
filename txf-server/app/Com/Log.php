@@ -23,7 +23,7 @@ class Log
      * @return mixed|null
      * @return string
      */
-    private static function getId($id)
+    private static function getId($id = '')
     {
         if (empty($id)) {
             $id = Context::get('request_uuid');
@@ -56,6 +56,8 @@ class Log
         }
 
         Context::set($id, $data);
+
+        return true;
     }
 
     /**
@@ -93,18 +95,35 @@ class Log
         }
 
         self::{$type}($data, $message);
+
+        return true;
     }
 
+    public static function commandLog($data)
+    {
+        $data = [
+            'run_time' => date_time_now(),
+            'data' => $data
+        ];
+
+        file_put_contents(File::buildCommandLogFileName(), Json::encode($data) . PHP_EOL, FILE_APPEND);
+
+        return true;
+    }
 
     /**
      * @param $name
      * @param $arguments
-     * @method info
+     * @return bool
      */
     public static function __callStatic($name, $arguments)
     {
         if (!in_array($name, ['info', 'warning', 'error'])) {
-            throw new BusinessException(ResponseCode::LOG_PARMAS_ERROR);
+            throw new BusinessException(ResponseCode::LOG_PARAMS_ERROR);
+        }
+
+        if (empty(self::getId())) {
+            return self::commandLog($arguments);
         }
 
         if ($name == 'info' && empty(config("log_info"))) {
@@ -121,15 +140,23 @@ class Log
         $logger = ApplicationContext::getContainer()->get(LoggerFactory::class)->get("default");
         $logger->{$name}($message, $context);
 
+        return true;
     }
 
-    public static function parseException(\Throwable $e): array
+    /**
+     * @param \Throwable $e
+     * @return array
+     */
+    public static function parseException(\Throwable $e, $clientData = []): array
     {
         return [
             'code' => $e->getCode(),
             'message' => $e->getMessage(),
+            'client_code' => $clientData['code'] ?? '',
+            'client_message' => $clientData['message'] ?? '',
             'file' => $e->getFile(),
             'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
         ];
     }
 

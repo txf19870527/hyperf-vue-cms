@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <div class="header">
             <!-- 折叠按钮 -->
             <div class="collapse-btn" @click="collapseChage">
@@ -12,14 +11,14 @@
                 <div class="header-user-con">
                     <!-- 全屏显示 -->
                     <div class="btn-fullscreen" @click="handleFullScreen">
-                        <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
+                        <el-tooltip effect="dark" :content="fullscreen ? `取消全屏` : `全屏`" placement="bottom">
                             <i class="el-icon-rank"></i>
                         </el-tooltip>
                     </div>
                     <!-- 用户名下拉菜单 -->
                     <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                         <span class="el-dropdown-link">
-                            {{username}}
+                            {{ username }}
                             <i class="el-icon-caret-bottom"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
@@ -30,7 +29,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- 更改密码 -->
         <div>
@@ -52,195 +50,192 @@
                 </span>
             </el-dialog>
         </div>
-
     </div>
 </template>
 <script>
-    import bus from '../common/bus';
-    import {
-        requestApi
-    } from '../../api/index';
-    
-    import { errMsg } from '../../utils/tool';
+import bus from '../common/bus';
 
-    export default {
-        data() {
-            return {
-                collapse: false,
-                fullscreen: false,
-                name: 'hyperf-vue-cms',
-                message: 2,
-                editVisible: false,
-                form: {},
-            };
+export default {
+    data() {
+        return {
+            collapse: false,
+            fullscreen: false,
+            name: 'hyperf-vue-cms',
+            message: 2,
+            editVisible: false,
+            form: {}
+        };
+    },
+    computed: {
+        username() {
+            let username = localStorage.getItem('cms_username');
+            return username ? username : this.name;
+        }
+    },
+    methods: {
+        saveEditPass() {
+            this.$api
+                .updatePassword(this.form)
+                .then((res) => {
+                    if (res.code == 0) {
+                        this.$message.success('修改成功');
+                        this.editVisible = false;
+                    }
+                })
+                .catch((error) => {});
         },
-        computed: {
-            username() {
-                let username = localStorage.getItem('cms_username');
-                return username ? username : this.name;
-            }
-        },
-        methods: {
-            saveEditPass() {
-                requestApi('updatePassword', this.form).then(res => {
-                    this.$message.success('修改成功');
-                    this.editVisible = false;
-                }).catch(error => {
-                    errMsg(this, error);
-                });
-            },
-            // 用户名下拉菜单选择事件
-            handleCommand(command) {
-                if (command == 'loginout') {
-
-                    requestApi("loginOut", {}).then(res => {
-
-                        this.$message.success("退出登录");
-
+        // 用户名下拉菜单选择事件
+        handleCommand(command) {
+            if (command == 'loginout') {
+                this.$api
+                    .loginOut({})
+                    .then((res) => {
+                        if (res.code == 0) {
+                            this.$message.success('退出登录');
+                        }
                         localStorage.removeItem('cms_token');
                         localStorage.removeItem('cms_username');
                         localStorage.removeItem('cms_menus');
                         localStorage.removeItem('cms_routes');
-
-                    }).catch(error => {
-
+                    })
+                    .catch((error) => {
                         localStorage.removeItem('cms_token');
                         localStorage.removeItem('cms_username');
                         localStorage.removeItem('cms_menus');
                         localStorage.removeItem('cms_routes');
                     });
 
-                    this.$router.push('/login');
-                } else if (command == 'showedit') {
-                    this.editVisible = true;
-                }
-            },
-            // 侧边栏折叠
-            collapseChage() {
-                this.collapse = !this.collapse;
-                bus.$emit('collapse', this.collapse);
-            },
-            // 全屏事件
-            handleFullScreen() {
-                let element = document.documentElement;
-                if (this.fullscreen) {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitCancelFullScreen) {
-                        document.webkitCancelFullScreen();
-                    } else if (document.mozCancelFullScreen) {
-                        document.mozCancelFullScreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                } else {
-                    if (element.requestFullscreen) {
-                        element.requestFullscreen();
-                    } else if (element.webkitRequestFullScreen) {
-                        element.webkitRequestFullScreen();
-                    } else if (element.mozRequestFullScreen) {
-                        element.mozRequestFullScreen();
-                    } else if (element.msRequestFullscreen) {
-                        // IE11
-                        element.msRequestFullscreen();
-                    }
-                }
-                this.fullscreen = !this.fullscreen;
+                this.$router.push('/login');
+            } else if (command == 'showedit') {
+                this.editVisible = true;
             }
         },
-        mounted() {
-            if (document.body.clientWidth < 1500) {
-                this.collapseChage();
+        // 侧边栏折叠
+        collapseChage() {
+            this.collapse = !this.collapse;
+            bus.$emit('collapse', this.collapse);
+        },
+        // 全屏事件
+        handleFullScreen() {
+            let element = document.documentElement;
+            if (this.fullscreen) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            } else {
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullScreen) {
+                    element.webkitRequestFullScreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    // IE11
+                    element.msRequestFullscreen();
+                }
             }
+            this.fullscreen = !this.fullscreen;
         }
-    };
+    },
+    mounted() {
+        if (document.body.clientWidth < 1500) {
+            this.collapseChage();
+        }
+    }
+};
 </script>
 <style scoped>
-    .header {
-        position: relative;
-        box-sizing: border-box;
-        width: 100%;
-        height: 70px;
-        font-size: 22px;
-        color: #fff;
-    }
+.header {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 70px;
+    font-size: 22px;
+    color: #fff;
+}
 
-    .collapse-btn {
-        float: left;
-        padding: 0 21px;
-        cursor: pointer;
-        line-height: 70px;
-    }
+.collapse-btn {
+    float: left;
+    padding: 0 21px;
+    cursor: pointer;
+    line-height: 70px;
+}
 
-    .header .logo {
-        float: left;
-        width: 250px;
-        line-height: 70px;
-    }
+.header .logo {
+    float: left;
+    width: 250px;
+    line-height: 70px;
+}
 
-    .header-right {
-        float: right;
-        padding-right: 50px;
-    }
+.header-right {
+    float: right;
+    padding-right: 50px;
+}
 
-    .header-user-con {
-        display: flex;
-        height: 70px;
-        align-items: center;
-    }
+.header-user-con {
+    display: flex;
+    height: 70px;
+    align-items: center;
+}
 
-    .btn-fullscreen {
-        transform: rotate(45deg);
-        margin-right: 5px;
-        font-size: 24px;
-    }
+.btn-fullscreen {
+    transform: rotate(45deg);
+    margin-right: 5px;
+    font-size: 24px;
+}
 
-    .btn-bell,
-    .btn-fullscreen {
-        position: relative;
-        width: 30px;
-        height: 30px;
-        text-align: center;
-        border-radius: 15px;
-        cursor: pointer;
-    }
+.btn-bell,
+.btn-fullscreen {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
 
-    .btn-bell-badge {
-        position: absolute;
-        right: 0;
-        top: -2px;
-        width: 8px;
-        height: 8px;
-        border-radius: 4px;
-        background: #f56c6c;
-        color: #fff;
-    }
+.btn-bell-badge {
+    position: absolute;
+    right: 0;
+    top: -2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: #f56c6c;
+    color: #fff;
+}
 
-    .btn-bell .el-icon-bell {
-        color: #fff;
-    }
+.btn-bell .el-icon-bell {
+    color: #fff;
+}
 
-    .user-name {
-        margin-left: 10px;
-    }
+.user-name {
+    margin-left: 10px;
+}
 
-    .user-avator {
-        margin-left: 20px;
-    }
+.user-avator {
+    margin-left: 20px;
+}
 
-    .user-avator img {
-        display: block;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-    }
+.user-avator img {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
 
-    .el-dropdown-link {
-        color: #fff;
-        cursor: pointer;
-    }
+.el-dropdown-link {
+    color: #fff;
+    cursor: pointer;
+}
 
-    .el-dropdown-menu__item {
-        text-align: center;
-    }
+.el-dropdown-menu__item {
+    text-align: center;
+}
 </style>

@@ -17,13 +17,9 @@ use App\Exception\BusinessException;
 use Hyperf\Database\Model\Events\Deleting;
 use Hyperf\DbConnection\Model\Model as BaseModel;
 
-//use Hyperf\ModelCache\Cacheable;
-//use Hyperf\ModelCache\CacheableInterface;
 
-abstract class Model extends BaseModel /*implements CacheableInterface*/
+abstract class Model extends BaseModel
 {
-    //    use Cacheable;
-
     /**
      * 删除统一用模型操作，不要用 qb 操作
      * @param Deleting $event
@@ -49,7 +45,7 @@ abstract class Model extends BaseModel /*implements CacheableInterface*/
 
             // 存在子权限不允许删除
             if (Permission::query()->where("pid", $data['id'])->count()) {
-                throw new BusinessException(ResponseCode::CUSTOM_ERROR, "{$data['title']}存在子权限，不允许删除");
+                throw new BusinessException(ResponseCode::COMMON_ERROR, "{$data['title']}存在子权限，不允许删除");
             }
 
             if (in_array($data['id'], config("admin.super_permission_id"))) {
@@ -98,8 +94,16 @@ abstract class Model extends BaseModel /*implements CacheableInterface*/
 
     public static function existsUpdateDataByArray($params, $id, $primaryKey = "id")
     {
+
         $count = static::query()->where($params)->where($primaryKey, "!=", $id)->count();
         return $count ? true : false;
     }
 
+    public static function processTimeRange($startTime, $endTime)
+    {
+        return [
+            date("Y-m-d 00:00:00", strtotime($startTime)),
+            date("Y-m-d 23:59:59", strtotime($endTime))
+        ];
+    }
 }

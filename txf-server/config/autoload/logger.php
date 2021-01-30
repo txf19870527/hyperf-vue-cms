@@ -12,7 +12,7 @@ return [
                 'class' => Monolog\Handler\RotatingFileHandler::class,
                 'constructor' => [
                     'filename' => BASE_PATH . '/runtime/logs/info/info.log',
-                    'maxFiles' => 14,
+                    'maxFiles' => 30,
                     'level' => Logger::INFO,
                     'filePermission' => 0666
                 ],
@@ -28,7 +28,7 @@ return [
                 'class' => Monolog\Handler\RotatingFileHandler::class,
                 'constructor' => [
                     'filename' => BASE_PATH . '/runtime/logs/error/error.log',
-                    'maxFiles' => 14,
+                    'maxFiles' => 90,
                     'level' => Logger::ERROR,
                     'filePermission' => 0666
                 ],

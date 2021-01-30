@@ -1,15 +1,16 @@
 <?php
 
 declare (strict_types=1);
+
 namespace App\Model;
 
 /**
- * @property int $id 
- * @property string $role_name 
- * @property string $description 
- * @property int $status 
- * @property string $created_at 
- * @property string $updated_at 
+ * @property int $id
+ * @property string $role_name
+ * @property string $description
+ * @property int $status
+ * @property string $created_at
+ * @property string $updated_at
  */
 class Role extends Model
 {
@@ -30,17 +31,19 @@ class Role extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'status' => 'integer'];
+    protected $casts = [];
     /**
      * @var array
      * 黑名单
      */
     protected $guarded = ['id'];
     public $timestamps = false;
+
     public function admins()
     {
         return $this->belongsToMany(Admin::class, "admin_role", "role_id", "admin_id");
     }
+
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, "role_permission", "role_id", "permission_id");

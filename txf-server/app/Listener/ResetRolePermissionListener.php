@@ -38,7 +38,7 @@ class ResetRolePermissionListener implements ListenerInterface
      * @param ResetRolePermissionEvent $event
      * @return bool
      */
-    public function process(object $event)
+    public function process($event)
     {
 
         $redis = $this->container->get(RedisFactory::class)->get("default");

@@ -38,7 +38,7 @@ class ForbiddenAdminListener implements ListenerInterface
      * @param ForbiddenAdminEvent $event
      * @return bool|Throws
      */
-    public function process(object $event)
+    public function process($event)
     {
         if ($event->adminIds) {
             $redis = $this->container->get(RedisFactory::class)->get("default");

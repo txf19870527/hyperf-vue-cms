@@ -2,9 +2,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i :class="icon"></i> {{title}}
-                </el-breadcrumb-item>
+                <el-breadcrumb-item> <i :class="icon"></i> {{ title }} </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -24,15 +22,21 @@
                 <el-button type="primary" icon="el-icon-lx-add" class="handle-add mr10" @click="handleAdd">新增</el-button>
             </div>
 
-            <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange">
+            <el-table
+                :data="tableData"
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+                @selection-change="handleSelectionChange"
+            >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="用户名" align="center"></el-table-column>
                 <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
                 <el-table-column label="状态" align="center">
                     <template slot-scope="scope">
-                        <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'">{{scope.row.status == 1 ? "启用" : "禁用"}}</el-tag>
+                        <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'">{{ scope.row.status == 1 ? '启用' : '禁用' }}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column prop="login_error_times" label="登录失败次数" align="center"></el-table-column>
@@ -41,15 +45,25 @@
                 <el-table-column label="操作" width="220" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        <el-button type="text" icon="el-icon-lx-settings" @click="handleSetting(scope.$index, scope.row.id)">绑定角色</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)"
+                            >删除</el-button
+                        >
+                        <el-button type="text" icon="el-icon-lx-settings" @click="handleSetting(scope.$index, scope.row.id)"
+                            >绑定角色</el-button
+                        >
                     </template>
                 </el-table-column>
             </el-table>
 
             <div class="pagination">
-                <el-pagination background layout="total, prev, pager, next" :current-page="query.page" :page-size="query.size"
-                    :total="total" @current-change="handlePageChange"></el-pagination>
+                <el-pagination
+                    background
+                    layout="total, prev, pager, next"
+                    :current-page="query.page"
+                    :page-size="query.size"
+                    :total="total"
+                    @current-change="handlePageChange"
+                ></el-pagination>
             </div>
         </div>
 
@@ -106,14 +120,19 @@
 
         <!-- 绑定角色弹出层 -->
         <el-dialog v-dialogDrag title="绑定角色" :visible.sync="roleVisible" width="30%" :close-on-click-modal="false">
-
-            <el-table :data="roleForm" border class="table" ref="roleForm" header-cell-class-name="table-header"
-                @selection-change="handleRoleSelectionChange">
+            <el-table
+                :data="roleForm"
+                border
+                class="table"
+                ref="roleForm"
+                header-cell-class-name="table-header"
+                @selection-change="handleRoleSelectionChange"
+            >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="role_name" label="名称" align="center"></el-table-column>
                 <el-table-column label="状态" align="center">
                     <template slot-scope="scope">
-                        <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'">{{scope.row.status == 1 ? "启用" : "禁用"}}</el-tag>
+                        <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'">{{ scope.row.status == 1 ? '启用' : '禁用' }}</el-tag>
                     </template>
                 </el-table-column>
             </el-table>
@@ -126,149 +145,141 @@
 </template>
 
 <script>
-    import {
-        requestApi
-    } from '../../api/index';
+export default {
+    data() {
+        return {
+            test: true,
+            query: {
+                name: '',
+                mobile: '',
+                status: '',
+                page: 1,
+                size: 20
+            },
+            tableData: [],
+            multipleSelection: [],
+            editVisible: false,
+            addVisible: false,
+            addForm: {
+                status: 1
+            },
+            total: 0,
+            form: {},
+            idx: -1,
+            id: -1,
+            title: '',
+            icon: '',
+            roleVisible: false,
+            roleForm: [],
+            roleMultipleSelection: []
+        };
+    },
+    created() {
+        this.title = this.$route.meta.title;
+        this.icon = this.$route.meta.icon;
 
-    import {
-        errMsg
-    } from '../../utils/tool';
+        this.getData();
+    },
+    methods: {
+        // 绑定角色
+        saveRole() {
+            var ids = this.roleMultipleSelection.map((item) => item.id);
 
-
-    export default {
-        data() {
-            return {
-                test: true,
-                query: {
-                    name: '',
-                    mobile: '',
-                    status: '',
-                    page: 1,
-                    size: 20
-                },
-                tableData: [],
-                multipleSelection: [],
-                editVisible: false,
-                addVisible: false,
-                addForm: {
-                    status: 1
-                },
-                total: 0,
-                form: {},
-                idx: -1,
-                id: -1,
-                title: '',
-                icon: '',
-                roleVisible: false,
-                roleForm: [],
-                roleMultipleSelection: []
-            };
-        },
-        created() {
-
-            this.title = this.$route.meta.title;
-            this.icon = this.$route.meta.icon;
-
-            this.getData();
-        },
-        methods: {
-            // 绑定角色
-            saveRole() {
-
-                var ids = this.roleMultipleSelection.map(item => item.id);
-
-                requestApi("saveStaffRoles", {
+            this.$api
+                .saveStaffRoles({
                     id: this.id,
                     roles: ids
-                }).then(res => {
-                    this.$message.success("保存成功");
-                    this.roleVisible = false;
-                }).catch(error => {
-                    errMsg(this, error);
-                });
-            },
-            // 绑定角色多选框
-            handleRoleSelectionChange(val) {
-                this.roleMultipleSelection = val;
-            },
-            initRoleChecked() {
-                this.roleForm.forEach(row => {
-                    if (row.checked) {
-                        this.$refs.roleForm.toggleRowSelection(row, true);
+                })
+                .then((res) => {
+                    if (res.code == 0) {
+                        this.$message.success('保存成功');
+                        this.roleVisible = false;
                     }
-                });
-            },
-            handleSetting(index, id) {
-                this.idx = index;
-                this.id = id;
-                this.roleVisible = true;
+                })
+                .catch((error) => {});
+        },
+        // 绑定角色多选框
+        handleRoleSelectionChange(val) {
+            this.roleMultipleSelection = val;
+        },
+        initRoleChecked() {
+            this.roleForm.forEach((row) => {
+                if (row.checked) {
+                    this.$refs.roleForm.toggleRowSelection(row, true);
+                }
+            });
+        },
+        handleSetting(index, id) {
+            this.idx = index;
+            this.id = id;
+            this.roleVisible = true;
 
-                requestApi("rolesWithAdmin", {
-                    "admin_id": id
-                }).then(res => {
-
+            this.$api
+                .rolesWithAdmin({
+                    admin_id: id
+                })
+                .then((res) => {
                     this.roleForm = res.data || [];
 
                     var that = this;
-                    setTimeout(function() {
+                    setTimeout(function () {
                         that.initRoleChecked();
                     }, 200);
-
-                }).catch(error => {
-                    errMsg(this, error);
                 })
-            },
-            resetAddForm() {
-                this.addForm = {
-                    status: 1
-                };
-            },
-            getData() {
-
-                requestApi("staff", this.query).then(res => {
-
+                .catch((error) => {});
+        },
+        resetAddForm() {
+            this.addForm = {
+                status: 1
+            };
+        },
+        getData() {
+            this.$api
+                .staff(this.query)
+                .then((res) => {
                     let data = res.data;
 
                     this.tableData = data.data;
                     this.total = data.total || 0;
-                }).catch(error => {
-                    errMsg(this, error);
-                });
-
-            },
-            // 触发搜索按钮
-            handleSearch() {
-                this.$set(this.query, 'page', 1);
-                this.getData();
-            },
-            // 删除操作
-            handleDelete(index, row) {
-
-                // 二次确认删除
-                this.$confirm('确定要删除 [' + row.name + '] 吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    requestApi("staffbatchDelete", {
-                        "ids": [row.id]
-                    }).then(res => {
-                        this.$message.success('删除成功');
-                        this.tableData.splice(index, 1);
-                    }).catch(error => {
-                        errMsg(this, error);
-                    });
-
-                }).catch(() => {});
-            },
-            // 多选操作
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-            delAllSelection() {
-
-                // 二次确认删除
-                this.$confirm('确定要批量删除吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
+                })
+                .catch((error) => {});
+        },
+        // 触发搜索按钮
+        handleSearch() {
+            this.$set(this.query, 'page', 1);
+            this.getData();
+        },
+        // 删除操作
+        handleDelete(index, row) {
+            // 二次确认删除
+            this.$confirm('确定要删除 [' + row.name + '] 吗？', '提示', {
+                type: 'warning'
+            })
+                .then(() => {
+                    this.$api
+                        .staffbatchDelete({
+                            ids: [row.id]
+                        })
+                        .then((res) => {
+                            if (res.code == 0) {
+                                this.$message.success('删除成功');
+                                this.tableData.splice(index, 1);
+                            }
+                        })
+                        .catch((error) => {});
+                })
+                .catch(() => {});
+        },
+        // 多选操作
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        delAllSelection() {
+            // 二次确认删除
+            this.$confirm('确定要批量删除吗？', '提示', {
+                type: 'warning'
+            })
+                .then(() => {
                     const length = this.multipleSelection.length;
 
                     if (!length) {
@@ -283,91 +294,97 @@
                         ids.push(this.multipleSelection[i].id);
                     }
 
-                    requestApi("staffbatchDelete", {
-                        "ids": ids
-                    }).then(res => {
-                        this.$message.success(`删除了${str}`);
-                        this.multipleSelection = [];
-                        this.getData();
-
-                    }).catch(error => {
-                        errMsg(this, error);
-                    })
-
-                }).catch(() => {});
-
-            },
-            // 编辑操作
-            handleEdit(index, row) {
-                this.idx = index;
-                this.form = Object.assign({}, row);
-                this.editVisible = true;
-            },
-            // 新增操作
-            handleAdd() {
-                this.addVisible = true;
-            },
-            saveAdd() {
-                requestApi("staffInsert", this.addForm).then(res => {
-                    this.$message.success('新增成功');
-                    this.resetAddForm();
-                    this.getData();
-                    this.addVisible = false;
-                }).catch(error => {
-                    errMsg(this, error);
-                });
-            },
-            // 保存编辑
-            saveEdit() {
-
-                requestApi("staffUpdate", this.form).then(res => {
-                    this.$message.success(`修改成功`);
-                    this.$set(this.tableData, this.idx, this.form);
-                    this.editVisible = false;
-                }).catch(error => {
-                    errMsg(this, error);
+                    this.$api
+                        .staffbatchDelete({
+                            ids: ids
+                        })
+                        .then((res) => {
+                            if (res.code == 0) {
+                                this.$message.success(`删除了${str}`);
+                                this.multipleSelection = [];
+                                this.getData();
+                            }
+                        })
+                        .catch((error) => {});
                 })
-            },
-            // 分页导航
-            handlePageChange(val) {
-                this.$set(this.query, 'page', val);
-                this.getData();
-            }
+                .catch(() => {});
+        },
+        // 编辑操作
+        handleEdit(index, row) {
+            this.idx = index;
+            this.form = Object.assign({}, row);
+            this.editVisible = true;
+        },
+        // 新增操作
+        handleAdd() {
+            this.addVisible = true;
+        },
+        saveAdd() {
+            this.$api
+                .staffInsert(this.addForm)
+                .then((res) => {
+                    if (res.code == 0) {
+                        this.$message.success('新增成功');
+                        this.resetAddForm();
+                        this.getData();
+                        this.addVisible = false;
+                    }
+                })
+                .catch((error) => {});
+        },
+        // 保存编辑
+        saveEdit() {
+            this.$api
+                .staffUpdate(this.form)
+                .then((res) => {
+                    if (res.code == 0) {
+                        this.$message.success(`修改成功`);
+                        this.$set(this.tableData, this.idx, this.form);
+                        this.editVisible = false;
+                    }
+                })
+                .catch((error) => {});
+        },
+        // 分页导航
+        handlePageChange(val) {
+            this.$set(this.query, 'page', val);
+            this.getData();
         }
-    };
+    }
+};
 </script>
 
 <style scoped>
-    .handle-box {
-        margin-bottom: 20px;
-    }
+.handle-box {
+    margin-bottom: 20px;
+}
 
-    .handle-select {
-        width: 120px;
-    }
+.handle-select {
+    width: 120px;
+}
 
-    .handle-input {
-        width: 300px;
-        display: inline-block;
-    }
+.handle-input {
+    width: 300px;
+    display: inline-block;
+}
 
-    .table {
-        width: 100%;
-        font-size: 14px;
-    }
+.table {
+    width: 100%;
+    font-size: 14px;
+}
 
-    .red {
-        color: #ff0000;
-    }
+.red {
+    color: #ff0000;
+}
 
-    .mr10 {
-        margin-right: 10px;
-    }
+.mr10 {
+    margin-right: 10px;
+}
 
-    .table-td-thumb {
-        display: block;
-        margin: auto;
-        width: 40px;
-        height: 40px;
-    }
+.table-td-thumb {
+    display: block;
+    margin: auto;
+    width: 40px;
+    height: 40px;
+}
 </style>

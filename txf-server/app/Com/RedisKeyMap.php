@@ -7,19 +7,15 @@ namespace App\Com;
 class RedisKeyMap
 {
     const TOKEN = "string:token";
-
     const TOKEN_CACHE = "string:token_cache";
 
     const RULE_PERMISSION_CACHE = "hash:rule_permission_cache";
-
     const REQUEST_LIMIT = 'string:request_limit';
 
     const TYPE_INCOME = 'string:type_income';
-
     const TYPE_EXPENSE = "string:type_expense";
 
-    const API_TOKEN = "hash:api_token";
-
+    const API_TOKEN = "string:api_token";
     const API_TOKEN_CACHE = "string:api_token_cache";
 
     /**
@@ -27,7 +23,7 @@ class RedisKeyMap
      * @param array $args
      * @return string
      */
-    public static function build(string $key, array $args = []):string
+    public static function build(string $key, array $args = []): string
     {
         $prefix = "txf:";
         if (empty($args)) {

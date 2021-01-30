@@ -1,13 +1,14 @@
 <?php
 
 declare (strict_types=1);
+
 namespace App\Model;
 
 /**
- * @property int $id 
- * @property string $tb_name 
- * @property string $data 
- * @property string $created_at 
+ * @property int $id
+ * @property string $tb_name
+ * @property string $data
+ * @property string $created_at
  */
 class DelBak extends Model
 {
@@ -28,6 +29,6 @@ class DelBak extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer'];
+    protected $casts = [];
     public $timestamps = false;
 }

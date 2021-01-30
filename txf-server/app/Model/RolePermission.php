@@ -1,14 +1,15 @@
 <?php
 
 declare (strict_types=1);
+
 namespace App\Model;
 
 /**
- * @property int $id 
- * @property int $role_id 
- * @property int $permission_id 
- * @property string $created_at 
- * @property string $updated_at 
+ * @property int $id
+ * @property int $role_id
+ * @property int $permission_id
+ * @property string $created_at
+ * @property string $updated_at
  */
 class RolePermission extends Model
 {
@@ -29,7 +30,7 @@ class RolePermission extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'role_id' => 'integer', 'permission_id' => 'integer'];
+    protected $casts = [];
     /**
      * @var array
      * 黑名单

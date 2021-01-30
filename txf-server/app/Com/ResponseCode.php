@@ -42,7 +42,7 @@ class ResponseCode extends AbstractConstants
      * 自定义错误（该错误码存在重复），不需要对code进行判断处理的，可以使用该错误码
      * @Message("%s")
      */
-    const CUSTOM_ERROR = 1001;
+    const COMMON_ERROR = 1001;
 
     /**
      * @Message("参数错误")
@@ -169,6 +169,16 @@ class ResponseCode extends AbstractConstants
      */
     const EXPORT_CSV_ERROR = 1026;
 
+    /**
+     * @Message("上传失败")
+     */
+    const UPLOAD_ERROR = 1027;
+
+    /**
+     * @Message("导入数据格式有误")
+     */
+    const IMPORT_ERROR = 1028;
+
 
     /*=================================== 2000 - 2099 ===========================================*/
 
@@ -176,9 +186,6 @@ class ResponseCode extends AbstractConstants
      * @Message("请求微信接口失败")
      */
     const REQUEST_WECHAT_ERROR = 2000;
-
-
-
 
 
     /*=================================== 2100 - 2199 ===========================================*/
@@ -189,22 +196,18 @@ class ResponseCode extends AbstractConstants
     const TYPE_TITLE_EXISTS = 2100;
 
 
-
     public static function error($errorCode, $message): array
     {
+
         if ($errorCode == self::SUCCESS_CODE) {
             $errorCode = self::UNKNOWN_ERROR;
         }
 
-        if ($errorCode == self::CUSTOM_ERROR) {
-            $msg = $message;
-        } else {
-            $msg = static::getMessage($errorCode, $message);
-        }
+        $message = static::getMessage($errorCode, $message);
 
         return [
             'code' => $errorCode,
-            'message' => $msg ?: '未知错误'
+            'message' => $message ?: '未知错误'
         ];
     }
 

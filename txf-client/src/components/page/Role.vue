@@ -2,9 +2,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i :class="icon"></i> {{title}}
-                </el-breadcrumb-item>
+                <el-breadcrumb-item> <i :class="icon"></i> {{ title }} </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -23,15 +21,21 @@
                 <el-button type="primary" icon="el-icon-lx-add" class="handle-add mr10" @click="handleAdd">新增</el-button>
             </div>
 
-            <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange">
+            <el-table
+                :data="tableData"
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+                @selection-change="handleSelectionChange"
+            >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="role_name" label="角色名" align="center"></el-table-column>
                 <el-table-column prop="description" label="角色描述" align="center"></el-table-column>
                 <el-table-column label="状态" align="center">
                     <template slot-scope="scope">
-                        <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'">{{scope.row.status == 1 ? "启用" : "禁用"}}</el-tag>
+                        <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'">{{ scope.row.status == 1 ? '启用' : '禁用' }}</el-tag>
                     </template>
                 </el-table-column>
 
@@ -39,15 +43,25 @@
                 <el-table-column label="操作" width="220" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        <el-button type="text" icon="el-icon-lx-settings" @click="handleSetting(scope.$index, scope.row.id)">绑定权限</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)"
+                            >删除</el-button
+                        >
+                        <el-button type="text" icon="el-icon-lx-settings" @click="handleSetting(scope.$index, scope.row.id)"
+                            >绑定权限</el-button
+                        >
                     </template>
                 </el-table-column>
             </el-table>
 
             <div class="pagination">
-                <el-pagination background layout="total, prev, pager, next" :current-page="query.page" :page-size="query.size"
-                    :total="total" @current-change="handlePageChange"></el-pagination>
+                <el-pagination
+                    background
+                    layout="total, prev, pager, next"
+                    :current-page="query.page"
+                    :page-size="query.size"
+                    :total="total"
+                    @current-change="handlePageChange"
+                ></el-pagination>
             </div>
         </div>
 
@@ -97,12 +111,19 @@
 
         <!-- 绑定权限弹出层 -->
         <el-dialog v-dialogDrag title="绑定权限" :visible.sync="permissionVisible" width="30%" :close-on-click-modal="false">
+            <el-input placeholder="输入关键字进行过滤" v-model="filterText" clearable class="mb10"> </el-input>
 
-            <el-input placeholder="输入关键字进行过滤" v-model="filterText" clearable class="mb10">
-            </el-input>
-
-            <el-tree :data="permissionData" show-checkbox class="filter-tree" ref="tree" :filter-node-method="filterNode"
-                node-key="id" default-expand-all :default-checked-keys="defaultCheckedKeys" :props="defaultProps">
+            <el-tree
+                :data="permissionData"
+                show-checkbox
+                class="filter-tree"
+                ref="tree"
+                :filter-node-method="filterNode"
+                node-key="id"
+                default-expand-all
+                :default-checked-keys="defaultCheckedKeys"
+                :props="defaultProps"
+            >
             </el-tree>
 
             <span slot="footer" class="dialog-footer">
@@ -114,143 +135,137 @@
 </template>
 
 <script>
-    import {
-        requestApi
-    } from '../../api/index';
-    
-    import { errMsg } from '../../utils/tool';
-    
-    export default {
-        data() {
-            return {
-                query: {
-                    role_name: '',
-                    status: '',
-                    page: 1,
-                    size: 20
-                },
-                tableData: [],
-                multipleSelection: [],
-                editVisible: false,
-                addVisible: false,
-                permissionVisible: false,
-                addForm: {
-                    status: 1
-                },
-                total: 0,
-                form: {},
-                idx: -1,
-                id: -1,
-                title: '',
-                icon: '',
-                permissionData: [],
-                defaultCheckedKeys: [],
-                defaultProps: {
-                    children: 'subs',
-                    label: 'title'
-                },
-                filterText: "",
-            };
-        },
-        created() {
-            
-            this.title = this.$route.meta.title;
-            this.icon = this.$route.meta.icon;
-
-            this.getData();
-        },
-        watch: {
-            filterText(val) {
-                this.$refs.tree.filter(val);
-            }
-        },
-        methods: {
-            filterNode(value, data) {
-                if (!value) return true;
-                return data.title.indexOf(value) !== -1;
+export default {
+    data() {
+        return {
+            query: {
+                role_name: '',
+                status: '',
+                page: 1,
+                size: 20
             },
-            savePermisssion() {
-                var permissionIds = this.$refs.tree.getCheckedNodes(false, true).map(item => item.id);
-
-                requestApi("saveRolePermissions", {
-                    "id": this.id,
-                    "permissions": permissionIds
-                }).then(res => {
-                    this.$message.success("保存成功");
-                    this.permissionVisible = false;
-                }).catch(error => {
-                    errMsg(this, error);
-                });
+            tableData: [],
+            multipleSelection: [],
+            editVisible: false,
+            addVisible: false,
+            permissionVisible: false,
+            addForm: {
+                status: 1
             },
-            handleSetting(index, id) {
-                this.idx = index;
-                this.id = id;
-                this.permissionVisible = true;
+            total: 0,
+            form: {},
+            idx: -1,
+            id: -1,
+            title: '',
+            icon: '',
+            permissionData: [],
+            defaultCheckedKeys: [],
+            defaultProps: {
+                children: 'subs',
+                label: 'title'
+            },
+            filterText: ''
+        };
+    },
+    created() {
+        this.title = this.$route.meta.title;
+        this.icon = this.$route.meta.icon;
 
-                requestApi("permissionWithRole", {
-                    "role_id": id
-                }).then(res => {
+        this.getData();
+    },
+    watch: {
+        filterText(val) {
+            this.$refs.tree.filter(val);
+        }
+    },
+    methods: {
+        filterNode(value, data) {
+            if (!value) return true;
+            return data.title.indexOf(value) !== -1;
+        },
+        savePermisssion() {
+            var permissionIds = this.$refs.tree.getCheckedNodes(false, true).map((item) => item.id);
 
+            this.$api
+                .saveRolePermissions({
+                    id: this.id,
+                    permissions: permissionIds
+                })
+                .then((res) => {
+                    if (res.code == 0) {
+                        this.$message.success('保存成功');
+                        this.permissionVisible = false;
+                    }
+                })
+                .catch((error) => {});
+        },
+        handleSetting(index, id) {
+            this.idx = index;
+            this.id = id;
+            this.permissionVisible = true;
+
+            this.$api
+                .permissionWithRole({
+                    role_id: id
+                })
+                .then((res) => {
                     let data = res.data || [];
                     this.permissionData = data.data;
                     this.defaultCheckedKeys = data.default_checked_keys;
-                }).catch(error => {
-                    errMsg(this, error);
                 })
-
-
-            },
-            resetAddForm() {
-                this.addForm = {
-                    status: 1
-                };
-            },
-            getData() {
-
-                requestApi("role", this.query).then(res => {
+                .catch((error) => {});
+        },
+        resetAddForm() {
+            this.addForm = {
+                status: 1
+            };
+        },
+        getData() {
+            this.$api
+                .role(this.query)
+                .then((res) => {
                     let data = res.data;
-
                     this.tableData = data.data;
                     this.total = data.total || 0;
-                }).catch(error => {
-                    errMsg(this, error);
-                });
-
-            },
-            // 触发搜索按钮
-            handleSearch() {
-                this.$set(this.query, 'page', 1);
-                this.getData();
-            },
-            // 删除操作
-            handleDelete(index, row) {
-
-                // 二次确认删除
-                this.$confirm('确定要删除 [' + row.role_name + '] 吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    requestApi("rolebatchDelete", {
-                        "ids": [row.id]
-                    }).then(res => {
-                        this.$message.success('删除成功');
-                        this.tableData.splice(index, 1);
-
-                    }).catch(error => {
-                        errMsg(this, error);
-                    });
-
-                }).catch(() => {});
-            },
-            // 多选操作
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-            delAllSelection() {
-
-                // 二次确认删除
-                this.$confirm('确定要批量删除吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
+                })
+                .catch((error) => {});
+        },
+        // 触发搜索按钮
+        handleSearch() {
+            this.$set(this.query, 'page', 1);
+            this.getData();
+        },
+        // 删除操作
+        handleDelete(index, row) {
+            // 二次确认删除
+            this.$confirm('确定要删除 [' + row.role_name + '] 吗？', '提示', {
+                type: 'warning'
+            })
+                .then(() => {
+                    this.$api
+                        .rolebatchDelete({
+                            ids: [row.id]
+                        })
+                        .then((res) => {
+                            if (res.code == 0) {
+                                this.$message.success('删除成功');
+                                this.tableData.splice(index, 1);
+                            }
+                        })
+                        .catch((error) => {});
+                })
+                .catch(() => {});
+        },
+        // 多选操作
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        delAllSelection() {
+            // 二次确认删除
+            this.$confirm('确定要批量删除吗？', '提示', {
+                type: 'warning'
+            })
+                .then(() => {
                     const length = this.multipleSelection.length;
 
                     if (!length) {
@@ -265,98 +280,101 @@
                         ids.push(this.multipleSelection[i].id);
                     }
 
-                    requestApi("rolebatchDelete", {
-                        "ids": ids
-                    }).then(res => {
-                        this.$message.success(`删除了${str}`);
-                        this.multipleSelection = [];
-                        this.getData();
-
-                    }).catch(error => {
-                        errMsg(this, error);
-                    })
-
-                }).catch(() => {});
-
-            },
-            // 编辑操作
-            handleEdit(index, row) {
-                this.idx = index;
-                this.form = Object.assign({}, row);
-                this.editVisible = true;
-            },
-            // 新增操作
-            handleAdd() {
-                this.addVisible = true;
-            },
-            saveAdd() {
-                requestApi("roleInsert", this.addForm).then(res => {
-                    this.$message.success('新增成功');
-                    this.resetAddForm();
-                    this.getData();
-                    this.addVisible = false;
-                }).catch(error => {
-                    errMsg(this, error);
-                });
-                
-            },
-            // 保存编辑
-            saveEdit() {
-
-                requestApi("roleUpdate", this.form).then(res => {
-                    this.$message.success(`修改成功`);
-                    this.$set(this.tableData, this.idx, this.form);
-                    this.editVisible = false;
-                }).catch(error => {
-                    errMsg(this, error);
+                    this.$api
+                        .rolebatchDelete({
+                            ids: ids
+                        })
+                        .then((res) => {
+                            if (res.code == 0) {
+                                this.$message.success(`删除了${str}`);
+                                this.multipleSelection = [];
+                                this.getData();
+                            }
+                        })
+                        .catch((error) => {});
                 })
-
-                
-            },
-            // 分页导航
-            handlePageChange(val) {
-                this.$set(this.query, 'page', val);
-                this.getData();
-            }
+                .catch(() => {});
+        },
+        // 编辑操作
+        handleEdit(index, row) {
+            this.idx = index;
+            this.form = Object.assign({}, row);
+            this.editVisible = true;
+        },
+        // 新增操作
+        handleAdd() {
+            this.addVisible = true;
+        },
+        saveAdd() {
+            this.$api
+                .roleInsert(this.addForm)
+                .then((res) => {
+                    if (res.code == 0) {
+                        this.$message.success('新增成功');
+                        this.resetAddForm();
+                        this.getData();
+                        this.addVisible = false;
+                    }
+                })
+                .catch((error) => {});
+        },
+        // 保存编辑
+        saveEdit() {
+            this.$api
+                .roleUpdate(this.form)
+                .then((res) => {
+                    if (res.code == 0) {
+                        this.$message.success(`修改成功`);
+                        this.$set(this.tableData, this.idx, this.form);
+                        this.editVisible = false;
+                    }
+                })
+                .catch((error) => {});
+        },
+        // 分页导航
+        handlePageChange(val) {
+            this.$set(this.query, 'page', val);
+            this.getData();
         }
-    };
+    }
+};
 </script>
 
 <style scoped>
-    .handle-box {
-        margin-bottom: 20px;
-    }
+.handle-box {
+    margin-bottom: 20px;
+}
 
-    .handle-select {
-        width: 120px;
-    }
+.handle-select {
+    width: 120px;
+}
 
-    .handle-input {
-        width: 300px;
-        display: inline-block;
-    }
+.handle-input {
+    width: 300px;
+    display: inline-block;
+}
 
-    .table {
-        width: 100%;
-        font-size: 14px;
-    }
+.table {
+    width: 100%;
+    font-size: 14px;
+}
 
-    .red {
-        color: #ff0000;
-    }
+.red {
+    color: #ff0000;
+}
 
-    .mr10 {
-        margin-right: 10px;
-    }
+.mr10 {
+    margin-right: 10px;
+}
 
-    .mb10 {
-        margin-bottom: 10px;
-    }
+.mb10 {
+    margin-bottom: 10px;
+}
 
-    .table-td-thumb {
-        display: block;
-        margin: auto;
-        width: 40px;
-        height: 40px;
-    }
+.table-td-thumb {
+    display: block;
+    margin: auto;
+    width: 40px;
+    height: 40px;
+}
 </style>

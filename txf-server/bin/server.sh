@@ -6,9 +6,10 @@ cd $basepath
 
 # 重置文件缓存
 initproxy(){
-  rm -rf runtime/container
-  echo "Runtime cleared"
-  php "${serverfile}" di:init-proxy
+  # rm -rf runtime/container
+  # echo "Runtime cleared"
+  composer dump-autoload -o
+  php "${serverfile}"
   echo "Init proxy runtime created"
   return $!
 }
@@ -94,6 +95,7 @@ case $1 in
   ;;
   'restart')
     stop
+    sleep 2
     start
   ;;
  'status')
