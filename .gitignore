@@ -11,3 +11,4 @@ txf-server/public/
 .phpintel/
 .DS_Store
 .phpunit*
+dump.rdb
