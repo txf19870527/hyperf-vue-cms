@@ -59,10 +59,10 @@ Router::addGroup(
         'middleware' => [
             \App\Middleware\InitMiddleware::class,
             \App\Middleware\CrossOriginMiddleware::class,
-            \App\Middleware\RequestLimitMiddleware::class,
             \App\Middleware\Admin\AuthMiddleware::class,
             \App\Middleware\FilterMiddleware::class,
             \App\Middleware\ValidationMiddleware::class,
+            \App\Middleware\RequestLimitMiddleware::class,
             \App\Middleware\UploadMiddleware::class
         ]
     ]
@@ -105,10 +105,10 @@ foreach ($versions as $version) {
             'middleware' => [
                 \App\Middleware\InitMiddleware::class,
                 \App\Middleware\CrossOriginMiddleware::class,
-                \App\Middleware\RequestLimitMiddleware::class,
                 \App\Middleware\Api\AuthMiddleware::class,
                 \App\Middleware\FilterMiddleware::class,
                 \App\Middleware\ValidationMiddleware::class,
+                \App\Middleware\RequestLimitMiddleware::class,
             ]
         ]
     );
