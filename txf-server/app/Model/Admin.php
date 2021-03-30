@@ -40,12 +40,6 @@ class Admin extends Model
      */
     protected $casts = [];
 
-    public function __construct(array $attributes = [])
-    {
-        $attributes['last_login_time'] = date_time_now();
-        parent::__construct($attributes);
-    }
-
     /**
      * @var array
      * 黑名单
